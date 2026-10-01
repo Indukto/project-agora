@@ -101,6 +101,30 @@
   --success-foreground: #ffffff;
 }
 
+@layer utilities {
+  /* Lagoon gradient (feralui palette) — oklab interpolation with hex fallback */
+  .gradient-lagoon {
+    background: linear-gradient(
+      135deg,
+      #176b87 12.5%,
+      #30a7a0 37.5%,
+      #7ac7c4 62.5%,
+      #e7cfa6 87.5%
+    );
+  }
+  @supports (background: linear-gradient(135deg in oklab, red, blue)) {
+    .gradient-lagoon {
+      background: linear-gradient(
+        135deg in oklab,
+        #176b87 12.5%,
+        #30a7a0 37.5%,
+        #7ac7c4 62.5%,
+        #e7cfa6 87.5%
+      );
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
