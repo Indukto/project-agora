@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "@/components/site/BrandMark";
-import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,7 +14,6 @@ const navItems = [
 export function AppHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -28,8 +26,6 @@ export function AppHeader() {
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
-
-  const partnerHref = isAuthenticated ? "/dashboard" : "/auth";
 
   return (
     <header
@@ -67,11 +63,8 @@ export function AppHeader() {
         </nav>
 
         <div className="hidden items-center gap-1 md:flex">
-          <Button variant="ghost" size="sm" asChild>
-            <Link to="/auth">Team sign-in</Link>
-          </Button>
           <Button size="sm" asChild>
-            <Link to={partnerHref}>Work with us</Link>
+            <Link to="/dashboard">Work with us</Link>
           </Button>
         </div>
 
@@ -99,7 +92,7 @@ export function AppHeader() {
               </Link>
             ))}
             <Link
-              to={partnerHref}
+              to="/dashboard"
               className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
             >
               Work with us

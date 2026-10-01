@@ -9,22 +9,11 @@ import {
 } from "@/components/ui/card";
 import { AppHeader } from "@/components/site/AppHeader";
 import { AppFooter } from "@/components/site/AppFooter";
-import { useAuth } from "@/hooks/use-auth";
 import { rangeRecords } from "@/data/range";
-import { LogOut, Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Plus } from "lucide-react";
+import { Link } from "react-router";
 
 export default function Dashboard() {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
-
-  const displayName = user?.name || user?.email?.split("@")[0] || "partner";
-
   const latestReports = [...rangeRecords]
     .sort((a, b) => b.rangeKm - a.rangeKm)
     .slice(0, 4);
@@ -37,21 +26,13 @@ export default function Dashboard() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-3xl font-normal tracking-tight sm:text-4xl">
-              Welcome back, {displayName}
+              Partner hub
             </h1>
             <p className="mt-2 max-w-xl leading-7 text-muted-foreground">
               Publish field data from your deployments. Every honest number
               here saves the next team a weekend of debugging.
             </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={handleSignOut}
-            className="gap-2 self-start"
-          >
-            <LogOut className="size-4" />
-            Sign out
-          </Button>
         </header>
 
         <div className="mt-8 grid gap-4 lg:grid-cols-2">

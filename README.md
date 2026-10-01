@@ -17,6 +17,8 @@ All relevant files live in the 'src' directory.
 
 Use bun for the package manager.
 
+![Partner hub after removing team sign-in](docs/partner-hub.png)
+
 ## Setup
 
 This project is set up already and running on a cloud environment, as well as a convex development in the sandbox.
@@ -48,7 +50,10 @@ On the `src/convex/users.ts` file, you can use the `getCurrentUser` function to 
 
 ## Using Convex Auth on the frontend
 
-The `/auth` page is already set up to use auth. Navigate to `/auth` for all log in / sign up sequences.
+There is currently no sign-in UI: the team sign-in button, the `/auth` route, and
+`src/pages/Auth.tsx` were removed, and `/dashboard` is public. The Convex auth
+stack (providers, backend, `useAuth` hook) is still wired up and ready if
+accounts come back.
 
 You MUST use this hook to get user data. Never do this yourself without the hook:
 ```typescript
@@ -59,36 +64,10 @@ const { isLoading, isAuthenticated, user, signIn, signOut } = useAuth();
 
 ## Protected Routes
 
-The starter `/dashboard` route is protected with `RequireAuth`. Extend that page
-for the product's authenticated experience, and reuse `RequireAuth` when adding
-another protected route — do NOT hand-roll a redirect to `/auth`, since landing
-on a bare sign-in form with no explanation of what was blocked is confusing.
-
-`RequireAuth` states the block on the page the visitor asked for and sends them
-to `/auth?returnTo=<current route>` when they choose to sign in, so they come
-back to it. Pass `title` and `description` to say what the page is:
-
-```tsx
-<Route
-  path="/dashboard"
-  element={
-    <RequireAuth
-      title="Sign in to view your dashboard"
-      description="Your projects and settings live here."
-    >
-      <Dashboard />
-    </RequireAuth>
-  }
-/>
-```
-
-Pass `redirectImmediately` for a route where bouncing straight to `/auth` really
-is better.
-
-## Auth Page
-
-The auth page is defined in `src/pages/Auth.tsx`. Send sign-in and sign-up actions
-to `/auth`.
+`/dashboard` is public, and the `RequireAuth` wrapper was removed along with the
+sign-in flow. If accounts return, restore `RequireAuth` (or an equivalent gate)
+before adding a route that needs a signed-in user, and give the blocked screen a
+`title` and `description` so visitors know what they are missing.
 
 ## Authorization
 
@@ -97,14 +76,6 @@ You can perform authorization checks on the frontend and backend.
 On the frontend, you can use the `useAuth` hook to get the current user's data and authentication state.
 
 You should also be protecting queries, mutations, and actions at the base level, checking for authorization securely.
-
-## Adding a redirect after auth
-
-The `/auth` route in `src/main.tsx` redirects to `/dashboard` by default. If the
-product's main authenticated route is different, update `redirectAfterAuth` to
-that route. A validated same-origin `returnTo` query parameter takes priority so
-users can resume the protected page they originally requested. Never leave an
-authenticated product redirecting back to the public landing page.
 
 ## Complete authenticated products
 
