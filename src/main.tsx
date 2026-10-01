@@ -13,6 +13,17 @@ const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const Guides = lazy(() => import("./pages/Guides.tsx"));
 const Range = lazy(() => import("./pages/Range.tsx"));
+// AGORA — the school project's own pages. The English guides and range pages
+// above stay as the technical documentation they were written to be.
+const Live = lazy(() => import("./pages/Live.tsx"));
+const Statistics = lazy(() => import("./pages/Statistics.tsx"));
+const MapPage = lazy(() => import("./pages/Map.tsx"));
+const Station = lazy(() => import("./pages/Station.tsx"));
+const LoRaWan = lazy(() => import("./pages/LoRaWan.tsx"));
+const Radio = lazy(() => import("./pages/Radio.tsx"));
+const Glossary = lazy(() => import("./pages/Glossary.tsx"));
+const Project = lazy(() => import("./pages/Project.tsx"));
+const ExportPage = lazy(() => import("./pages/Export.tsx"));
 
 // Simple loading fallback for route transitions
 function RouteLoading() {
@@ -107,6 +118,17 @@ function RouteSyncer() {
 }
 
 
+// GitHub Pages serves public/404.html for client-side routes, which parks the
+// requested path here and redirects to "/". Restore it before the router reads
+// the URL, so a hard load of /guides or the auth /callback lands on the right
+// route instead of the landing page. Runs before createRoot on purpose — the
+// replaceState has to be visible to the first render.
+const parkedPath = sessionStorage.getItem("pages-spa-path");
+if (parkedPath) {
+  sessionStorage.removeItem("pages-spa-path");
+  window.history.replaceState(null, "", parkedPath);
+}
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RootErrorBoundary>
@@ -119,6 +141,15 @@ createRoot(document.getElementById("root")!).render(
           <Suspense fallback={<RouteLoading />}>
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/live" element={<Live />} />
+              <Route path="/statistiken" element={<Statistics />} />
+              <Route path="/karte" element={<MapPage />} />
+              <Route path="/station" element={<Station />} />
+              <Route path="/lorawan" element={<LoRaWan />} />
+              <Route path="/funktechnik" element={<Radio />} />
+              <Route path="/glossar" element={<Glossary />} />
+              <Route path="/projekt" element={<Project />} />
+              <Route path="/export" element={<ExportPage />} />
               <Route path="/guides" element={<Guides />} />
               <Route path="/range" element={<Range />} />
               <Route path="/dashboard" element={<Dashboard />} />

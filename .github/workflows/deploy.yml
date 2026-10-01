@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# `pages: write` and `id-token: write` are what let the deploy job mint the
+# short-lived token that deploy-pages exchanges for an upload.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Pages serves one artifact at a time. Cancel an in-flight run rather than
+# queueing it, so a rapid series of pushes does not deploy stale builds last.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.0"
+
+      # bun.lock is committed, so this resolves exactly what you run locally.
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # src/convex/_generated/ is gitignored, so `tsc -b` inside `bun run build`
+      # cannot resolve ./api without it. Codegen introspects the live deployment,
+      # which also keeps the types honest when the schema changes.
+      - name: Generate Convex types
+        env:
+          CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
+          CONVEX_DEPLOYMENT: ${{ vars.CONVEX_DEPLOYMENT }}
+          CONVEX_DEPLOYMENT_KEY: ${{ secrets.CONVEX_DEPLOYMENT_KEY }}
+        run: bunx convex codegen
+
+      - name: Build
+        env:
+          VITE_CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
+          BASE_PATH: ${{ vars.BASE_PATH }}
+        run: bun run build
+
+      # A custom domain at the apex needs the CNAME record committed alongside
+      # the site for Pages to keep renewing the certificate. Skipped when the
+      # variable is unset, which is the case before DNS is in place.
+      - name: Write CNAME
+        if: ${{ vars.PAGES_DOMAIN != '' }}
+        run: echo "${{ vars.PAGES_DOMAIN }}" > dist/CNAME
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

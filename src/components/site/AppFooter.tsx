@@ -8,39 +8,54 @@ export function AppFooter() {
         <div className="space-y-3">
           <BrandMark />
           <p className="max-w-sm text-sm leading-6 text-muted-foreground">
-            Documentation for Project Agora, a long-range LoRa solution: how
-            the hardware is built, what it achieves in the field, and why.
+            Project Agora — eine LoRaWAN-Funkstation an der Schule und die
+            Website, die zeigt, was bei ihr ankommt. Jede Zahl stammt aus einem
+            echten Uplink.
           </p>
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-medium">Version 1</h4>
+          <h4 className="mb-3 text-sm font-medium">Station</h4>
           <ul className="space-y-2.5 text-sm">
-            <li>
-              <Link
-                to="/guides"
-                className="text-foreground/75 transition-colors hover:text-primary"
-              >
-                Hardware guides
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/range"
-                className="text-foreground/75 transition-colors hover:text-primary"
-              >
-                Range comparisons
-              </Link>
-            </li>
+            {[
+              { to: "/live", label: "Live-Daten" },
+              { to: "/karte", label: "Karte" },
+              { to: "/statistiken", label: "Statistiken" },
+              { to: "/station", label: "Funkstation" },
+              { to: "/export", label: "Daten exportieren" },
+            ].map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  className="text-foreground/75 transition-colors hover:text-primary"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
         <div>
-          <h4 className="mb-3 text-sm font-medium">Later versions</h4>
-          <ul className="space-y-2.5 text-sm text-muted-foreground">
-            <li>Resource help center</li>
-            <li>Forums and chat</li>
-            <li>Meet-up maps</li>
+          <h4 className="mb-3 text-sm font-medium">Hintergrund</h4>
+          <ul className="space-y-2.5 text-sm">
+            {[
+              { to: "/lorawan", label: "LoRaWAN" },
+              { to: "/funktechnik", label: "Funktechnik" },
+              { to: "/glossar", label: "Glossar" },
+              { to: "/projekt", label: "Projekt" },
+              { to: "/guides", label: "Hardware guides" },
+              { to: "/range", label: "Range comparisons" },
+            ].map((item) => (
+              <li key={item.to}>
+                <Link
+                  to={item.to}
+                  className="text-foreground/75 transition-colors hover:text-primary"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

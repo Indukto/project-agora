@@ -1,12 +1,40 @@
 import { vlyPlugin } from "@vly-ai/integrations";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import fs from "fs";
 import path from "path";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
+
+// Custom domain at the apex keeps this "/", which is the default and needs no
+// configuration. Set BASE_PATH to "/project-agora/" to serve from the github.io
+// subpath instead, or to "/anything/" behind a Pages site under a prefix.
+const base = process.env.BASE_PATH || "/";
+
+/** Bake the base into the GitHub Pages 404 fallback.
+ *
+ *  GitHub Pages has no SPA rewrite, so it serves public/404.html for every path
+ *  that has no file behind it. That file is copied verbatim, so it cannot read
+ *  `base` at runtime — a hardcoded "/" would bounce a "/project-agora/guides"
+ *  request off to the domain root. Substituting here keeps both modes working. */
+function pagesFallback(): Plugin {
+  return {
+    name: "pages-fallback",
+    writeBundle(options) {
+      const file = path.join(options.dir ?? "dist", "404.html");
+      if (fs.existsSync(file)) {
+        fs.writeFileSync(
+          file,
+          fs.readFileSync(file, "utf8").replaceAll("__BASE__", base),
+        );
+      }
+    },
+  };
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), vlyPlugin(), tailwindcss()],
+  base,
+  plugins: [react(), vlyPlugin(), tailwindcss(), pagesFallback()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

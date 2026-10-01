@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading…</title>
+    <script>
+      // GitHub Pages has no SPA rewrite, so any path without a real file behind
+      // it lands here instead of index.html. Park the requested path, then boot
+      // the app at its base — main.tsx restores it with history.replaceState
+      // before React renders, so deep links and Convex Auth's /callback resolve
+      // without a visible redirect or a flash of the wrong route.
+      //
+      // __BASE__ is substituted by the pagesFallback plugin in vite.config.ts.
+      // public/ is copied verbatim, so without that it would ship literally and
+      // bounce a subpath request off to the domain root.
+      sessionStorage.setItem(
+        "pages-spa-path",
+        location.pathname + location.search + location.hash,
+      );
+      location.replace("__BASE__");
+    </script>
+  </head>
+  <body></body>
+</html>

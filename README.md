@@ -63,8 +63,90 @@ Serif (headings, wordmark); body and code stay on Roboto. Instrument Serif ships
 one weight, so headings are pinned to `font-normal` rather than asking for a
 synthesised bold.
 
-`src/components/site/LagoonWash.tsx` is the earlier hand-rolled CPU wash; the
-generated engine replaced it on the landing and it is no longer mounted.
+`src/components/site/LagoonWash.tsx` was the earlier hand-rolled CPU wash. The
+generated engine replaced it on the landing, no import referenced it, and the
+file has been deleted rather than left to rot.
+
+Below the hero, `src/components/site/LandingIntro.tsx` adds the German project
+content: what AGORA is, three live figures, and the list of sections. The hero
+itself was not touched — it is only boxed into a fixed-height `<section>` so
+something can follow it. `docs/landing.png` still shows the hero as delivered
+and says nothing about what is now underneath it.
+
+## The AGORA pages (German)
+
+Nine pages carry the school project, in German, alongside the English guides and
+range pages:
+
+| Route | Page | What it is |
+| --- | --- | --- |
+| `/live` | Live-Daten | Last reading per node, with the age of every measurement |
+| `/statistiken` | Statistiken | Series, min/avg/max and the uplink log; node and range live in the query string |
+| `/karte` | Karte | Station, nodes and per-spreading-factor range circles |
+| `/station` | Funkstation | Hardware, specs, energy budget, and the five-stage signal path |
+| `/lorawan` | LoRaWAN | Uplink/downlink, ALOHA, and a real airtime calculation |
+| `/funktechnik` | Funktechnik | Frequency, range per SF, link budget, per-node headroom |
+| `/glossar` | Glossar | 16 terms, grouped along the signal path |
+| `/projekt` | Projekt | Roles, build, current status |
+| `/export` | Export | CSV and JSON per node and range |
+
+`src/components/data/ArchitectureDiagram.tsx` is the numbered rail used on both
+`/station` and `/projekt`; `src/components/data/StationMap.tsx` is the SVG map.
+The map is hand-drawn rather than tiled on purpose — a Leaflet layer would need
+the network to answer, which is a bad property for a page demonstrated in a
+classroom, and the footprint is under two kilometres across. The projection
+carries a cos(latitude) correction so the range circles stay circular; Mercator
+would shear them and quietly misstate the reach.
+
+### Design system additions
+
+The new pages extend the landing's vocabulary rather than inventing a dashboard.
+`site/PageHero.tsx` is the hero shortened to 52svh with a title in it, reusing
+the same three layers and steering `Lagoon.jsx` only through its props.
+`site/Figure.tsx` sets a number like a figure in a report — label, large value,
+caption, one hairline above it, **no card**. `site/Reveal.tsx` is the landing's
+fade-up lifted out so it stops being copy-pasted; `Landing.tsx` keeps its own
+inline variants because that hero arrived finished in one commit and is not worth
+re-plumbing. `site/DataTable.tsx` is a ruled table, `site/LiveBadge.tsx` an
+age indicator.
+
+`Figure` has a `variant="ticking"` that switches to the sans face with tabular
+figures. Instrument Serif has no tabular figures, so a value that rewrites every
+few seconds visibly jitters in it — the wrong signal on a page whose job is to
+say whether a number changed.
+
+## Where the numbers come from
+
+`src/lib/telemetry.ts` is a pure, deterministic model of the station.
+`valueAt(node, ts)` takes a timestamp as an argument, never reads the clock and
+never calls `Math.random()`, so the same node and timestamp always produce the
+same reading. It contains the physics rather than a lookup table: free-space
+path loss with terrain shadowing for RSSI, a diurnal curve plus a slow weather
+front for temperature, and the Semtech AN1200.22 formula for airtime. Roughly one
+slot in sixteen is a real gap, so the charts show that the data is not a smooth
+invention.
+
+`src/data/fixtures.ts` is the one place the station is configured, and the one
+place the coordinates are wrong. **The lat/lng there are placeholders**,
+roughly central Berlin so the map has a sensible area to project. Replace them
+and the range model, the link budget, the map and the airtime table all follow,
+because they all read the same numbers.
+
+`src/data/measurements.ts` is the seam every page reads through. Each function
+takes `now` rather than reading the clock, so a caller can freeze time and the
+export can never disagree with the screen. Today the bodies call the generator;
+when a backend is connected they become query calls and no page changes.
+
+### Convex is wired but not connected
+
+`src/convex/schema.ts` declares four tables — `stations`, `nodes`, `readings`,
+`uplinks` — with the indices the read queries will need. The pages do not read
+them yet, and that is deliberate: this checkout has no deployment,
+`VITE_CONVEX_URL` is the placeholder `https://placeholder-123.convex.cloud`, so
+`src/convex/_generated` does not exist. Any `query` or `mutation` written against
+it would fail to compile and could not be exercised, so the site answers from the
+generator instead and needs no credentials. The schema file carries the
+four-step switch-over.
 
 ![Guides placeholder](docs/guides-placeholder.png)
 
@@ -84,6 +166,47 @@ The project is set up with project specific CONVEX_DEPLOYMENT and VITE_CONVEX_UR
 The convex server has a separate set of environment variables that are accessible by the convex backend.
 
 Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
+
+## Deploying to GitHub Pages
+
+`.github/workflows/deploy.yml` builds on every push to `main` and publishes `dist/`. The Convex backend stays hosted on Convex Cloud — Pages only serves the static frontend, so there is no server component to host.
+
+Repository **Actions → Variables**:
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `VITE_CONVEX_URL` | yes | Convex deployment URL, baked into the bundle at build time. |
+| `CONVEX_DEPLOYMENT` | yes | Deployment name, used by the codegen step. |
+| `BASE_PATH` | no | Defaults to `/`. Only needed for subpath hosting. |
+| `PAGES_DOMAIN` | no | When set, the workflow writes `dist/CNAME` for custom-domain hosting. |
+
+Repository **Settings → Secrets**: `CONVEX_DEPLOYMENT_KEY` (a Convex admin key for the deployment). Codegen introspects the live deployment, which is why `src/convex/_generated/` — gitignored — does not need to be committed.
+
+In the repository, set **Settings → Pages → Source** to **GitHub Actions** once, before the first run.
+
+### Custom domain vs subpath
+
+For a custom domain at the apex, `BASE_PATH` stays unset and every asset resolves against `/`. To host on `https://<user>.github.io/project-agora/` instead, set `BASE_PATH=/project-agora/`; the `pagesFallback` plugin in `vite.config.ts` keeps the 404 redirect pointed at that prefix.
+
+Note that `VITE_CONVEX_URL` is embedded in public JavaScript by design — it is a deployment identifier, not a secret. The admin key is the only value that must stay in secrets.
+
+### Deep links and the auth callback
+
+GitHub Pages has no SPA rewrite, so `/guides` or `/dashboard` would serve its 404 rather than the app. `public/404.html` parks the requested path in `sessionStorage` and redirects to the base; `src/main.tsx` restores it with `history.replaceState` **before** `createRoot`, so the router's first render already sees the right URL. That ordering matters for Convex Auth, whose `/callback` exchange only fires when the provider boots on that exact path.
+
+### One known build blocker — resolved
+
+An earlier state passed `2` as the second argument to `formatNumber`, whose
+signature in `src/lib/format.ts` was `digits: 0 | 1`. `vite build` does not
+typecheck, so the site still ran, but `tsc -b` inside `bun run build` failed and
+turned the workflow red. `formatNumber` now accepts `0 | 1 | 2`, which is what
+the LoRa data rates need — 0.25 kbit/s at SF12 rounds to "0" at zero decimals
+and to a correct "0,3" at two.
+
+Two errors remain in `tsc -b`, and both predate the AGORA pages: `users.ts` and
+`hooks/use-auth.ts` import from `src/convex/_generated`, which is gitignored and
+generated by `npx convex dev`. They clear the moment a real deployment is
+configured; nothing in the new code imports it.
 
 
 # Using Authentication (Important!)

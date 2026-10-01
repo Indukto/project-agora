@@ -1,4 +1,5 @@
 import { AppHeader } from "@/components/site/AppHeader";
+import { LandingIntro } from "@/components/site/LandingIntro";
 import { SignalBurst } from "@/components/site/SignalBurst";
 import LagoonArt from "../../Lagoon";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
@@ -36,11 +37,15 @@ export default function Landing() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="relative min-h-[100svh] overflow-hidden">
+    <div className="min-h-screen">
       <AppHeader />
 
       {/* ── The wash is the page ── */}
-      <section aria-hidden="true" className="gradient-lagoon absolute inset-0">
+      {/* Everything inside this section is the delivered landing hero, class for
+          class. The only change is that it is now boxed into a fixed-height
+          section, so the German project content can follow below the fold. */}
+      <section className="relative h-[100svh] overflow-hidden">
+      <div aria-hidden="true" className="gradient-lagoon absolute inset-0">
         <LagoonArt
           speed={22}
           style={{
@@ -51,7 +56,7 @@ export default function Landing() {
             aspectRatio: "auto",
           }}
         />
-      </section>
+      </div>
 
       {/* ── Signal rings, drawn over the wash ── */}
       <SignalBurst className="pointer-events-none absolute -right-[26%] -bottom-[38%] size-[92vmin] text-[#0b3d3c] opacity-80 mix-blend-multiply sm:-right-[16%] sm:-bottom-[30%]" />
@@ -60,7 +65,7 @@ export default function Landing() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-[radial-gradient(125%_145%_at_0%_100%,rgba(255,253,248,0.68)_0%,rgba(255,253,248,0.3)_38%,transparent_72%)]" />
 
       {/* ── The only copy on the page ── */}
-      <main className="relative flex min-h-[100svh] flex-col justify-end px-4 pt-32 pb-14 sm:px-6 sm:pb-20">
+      <div className="relative flex h-full flex-col justify-end px-4 pt-32 pb-14 sm:px-6 sm:pb-20">
         <div className="mx-auto w-full max-w-6xl">
           <motion.div
             initial={reduceMotion ? false : "hidden"}
@@ -89,10 +94,14 @@ export default function Landing() {
               transition={{ duration: 1, ease: EASE }}
               className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3"
             >
-              <Link to="/guides" className={LINK_CLASS}>
-                Hardware guides
-                <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
+                <Link to="/live" className={LINK_CLASS}>
+                  Live-Daten
+                  <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </Link>
+                <Link to="/guides" className={LINK_CLASS}>
+                  Hardware guides
+                  <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </Link>
               <Link to="/range" className={LINK_CLASS}>
                 Range results
                 <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -100,7 +109,10 @@ export default function Landing() {
             </motion.div>
           </motion.div>
         </div>
-      </main>
+      </div>
+      </section>
+
+      <LandingIntro />
     </div>
   );
 }
