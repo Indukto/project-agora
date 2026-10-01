@@ -28,18 +28,14 @@ export default function Landing() {
         <LagoonWash />
         <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pt-40 pb-16 sm:px-6 sm:pb-20">
           <div className="max-w-xl">
-            <h1 className="text-4xl font-medium leading-[1.1] tracking-tight text-white sm:text-5xl">
+            <h1 className="text-4xl font-medium leading-[1.1] tracking-tight text-[#12191f] sm:text-5xl">
               Project Agora
             </h1>
-            <p className="mt-4 text-lg leading-7 text-white/85">
+            <p className="mt-4 text-lg leading-7 text-[#1d2a33]/85">
               Long-range LoRa, documented.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button
-                size="lg"
-                className="bg-white text-[#176B87] hover:bg-white/90"
-                asChild
-              >
+              <Button size="lg" asChild>
                 <Link to="/guides">
                   Read the guides
                   <ArrowRight className="size-4" />
@@ -47,8 +43,8 @@ export default function Landing() {
               </Button>
               <Button
                 size="lg"
-                variant="ghost"
-                className="border border-white/40 text-white hover:bg-white/10"
+                variant="outline"
+                className="border-[#12191f]/30 bg-white/40 text-[#12191f] hover:bg-white/70"
                 asChild
               >
                 <Link to="/range">Range results</Link>
