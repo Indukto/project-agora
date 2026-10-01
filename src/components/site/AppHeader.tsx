@@ -57,6 +57,9 @@ const documentationItems = [
  *
  * Handled on click rather than in an effect on `pathname`, because that value
  * never changes on a self-click and the effect would not fire.
+ *
+ * The back button is untouched by this: `history.back()` is not a click, so it
+ * never reaches these handlers and keeps whatever the browser does on its own.
  */
 function scrollToTop() {
   window.scrollTo(0, 0);
@@ -66,19 +69,6 @@ export function AppHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-
-  /**
-   * Scroll for a nav click, but leave the back button alone.
-   *
-   * The browser restores the scroll offset itself on a POP, and it does that
-   * better than we could — the reader lands where they left off. Snapping to
-   * the top on every click would quietly break that, so a click only scrolls
-   * when it is the one thing the browser cannot fix: a link to the page we are
-   * already on, which causes no navigation and therefore no restore.
-   */
-  const scrollForNav = (to: string) => () => {
-    if (to !== location.pathname) scrollToTop();
-  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -118,7 +108,7 @@ export function AppHeader() {
           to="/"
           aria-label="Project Agora home"
           className="rounded-md"
-          onClick={scrollForNav("/")}
+          onClick={scrollToTop}
         >
           <BrandMark />
         </Link>
@@ -129,7 +119,7 @@ export function AppHeader() {
               key={item.to}
               to={item.to}
               className={navLinkClass(isActive(item.to))}
-              onClick={scrollForNav(item.to)}
+              onClick={scrollToTop}
             >
               {item.label}
             </Link>
@@ -153,7 +143,7 @@ export function AppHeader() {
                   <Link
                     to={item.to}
                     className={isActive(item.to) ? "text-primary" : undefined}
-                    onClick={scrollForNav(item.to)}
+                    onClick={scrollToTop}
                   >
                     {item.label}
                   </Link>
@@ -165,7 +155,7 @@ export function AppHeader() {
                   <Link
                     to={item.to}
                     className={isActive(item.to) ? "text-primary" : undefined}
-                    onClick={scrollForNav(item.to)}
+                    onClick={scrollToTop}
                   >
                     {item.label}
                   </Link>
@@ -177,7 +167,7 @@ export function AppHeader() {
 
         <div className="hidden items-center gap-1 md:flex">
           <Button size="sm" asChild>
-            <Link to="/live" onClick={scrollForNav("/live")}>
+            <Link to="/live" onClick={scrollToTop}>
               Live ansehen
             </Link>
           </Button>
@@ -201,7 +191,7 @@ export function AppHeader() {
               <Link
                 key={item.to}
                 to={item.to}
-                onClick={scrollForNav(item.to)}
+                onClick={scrollToTop}
                 className={cn(
                   "rounded-xl px-4 py-3 text-sm",
                   isActive(item.to) ? "bg-muted text-primary" : "text-foreground/80",
@@ -216,7 +206,7 @@ export function AppHeader() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  onClick={scrollForNav(item.to)}
+                  onClick={scrollToTop}
                   className={cn(
                     "rounded-xl px-4 py-3 text-sm",
                     isActive(item.to) ? "bg-muted text-primary" : "text-foreground/80",
@@ -229,7 +219,7 @@ export function AppHeader() {
 
             <Link
               to="/live"
-              onClick={scrollForNav("/live")}
+              onClick={scrollToTop}
               className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
             >
               Live ansehen
