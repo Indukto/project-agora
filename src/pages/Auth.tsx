@@ -126,9 +126,9 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                 <div className="mb-1 flex justify-center">
                   <BrandMark compact />
                 </div>
-                <CardTitle className="font-display text-xl">Join Meshwire</CardTitle>
+                <CardTitle className="font-display text-xl">Project Agora</CardTitle>
                 <CardDescription>
-                  Partner sign-in — enter your email to log in or sign up
+                  Team and partner sign-in — enter your email to log in or sign up
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleEmailSubmit}>

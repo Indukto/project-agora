@@ -52,8 +52,8 @@ export default function Dashboard() {
               Welcome back, {displayName}
             </h1>
             <p className="mt-2 max-w-xl text-muted-foreground">
-              Publish field data from your network. Every honest number here
-              saves the next builder a weekend.
+              Publish field data from your deployments. Every honest number
+              here saves the next team a weekend of debugging.
             </p>
           </div>
           <Button variant="outline" onClick={handleSignOut} className="gap-2 self-start">
@@ -97,7 +97,7 @@ export default function Dashboard() {
                 },
                 {
                   title: "Node profile",
-                  body: "Document a gateway or repeater build so others can reference your setup.",
+                  body: "Document a gateway or repeater deployment so other teams can reference your setup.",
                 },
               ].map((item) => (
                 <div
@@ -157,17 +157,16 @@ export default function Dashboard() {
               ))}
             </CardContent>
           </Card>
-        </div>
-
-        {/* Scope note */}
-        <Card className="mt-6 rounded-3xl border-border/70 bg-surface-2/50 shadow-none">
-          <CardContent className="text-sm leading-6 text-muted-foreground">
-            <span className="font-medium text-foreground">Version 1 scope.</span>{" "}
-            The partner hub covers hardware guides and range comparisons only.
-            The resource help center, forums, and meet-up maps are planned for
-            v2 — they'll appear here when they're real, not before.
-          </CardContent>
-        </Card>
+        </div>          {/* Scope note */}
+          <Card className="mt-6 rounded-3xl border-border/70 bg-surface-2/50 shadow-none">
+            <CardContent className="text-sm leading-6 text-muted-foreground">
+              <span className="font-medium text-foreground">Version 1 scope.</span>{" "}
+              The partner hub covers hardware guides and range comparisons
+              only. The resource help center, forums, and meet-up maps are
+              planned for v2 — they'll appear here when they're real, not
+              before.
+            </CardContent>
+          </Card>
       </main>
       <AppFooter />
     </div>

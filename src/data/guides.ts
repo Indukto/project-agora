@@ -1,5 +1,5 @@
 /**
- * Meshwire v1 content: hardware build guides.
+ * Project Agora v1 content: hardware build guides.
  * Scope note: v1 ships hardware guides + range comparisons only — resource
  * hub, forums and meet-up maps are explicitly out of scope.
  */
@@ -45,7 +45,7 @@ export const guides: Guide[] = [
       "LiFePO4 12.8V 6Ah pack with BMS",
       "MPPT charge controller (small, e.g. 10A)",
       "IP65 enclosure with cable glands",
-      " Waterproof SMA bulkhead + 3 dBi fiberglass antenna",
+      "Waterproof SMA bulkhead + 3 dBi fiberglass antenna",
     ],
     steps: [
       {

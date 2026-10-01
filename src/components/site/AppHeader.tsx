@@ -41,7 +41,7 @@ export function AppHeader() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" aria-label="Meshwire home" className="rounded-md">
+        <Link to="/" aria-label="Project Agora home" className="rounded-md">
           <BrandMark />
         </Link>
 
@@ -70,11 +70,11 @@ export function AppHeader() {
 
         <div className="hidden items-center gap-2 md:flex">
           <Button variant="ghost" size="sm" asChild>
-            <Link to="/auth">Partner sign-in</Link>
+            <Link to="/auth">Team sign-in</Link>
           </Button>
           <Button size="sm" asChild>
             <Link to={partnerHref}>
-              Become a partner
+              Work with us
               <ArrowUpRight className="size-3.5" />
             </Link>
           </Button>
@@ -107,7 +107,7 @@ export function AppHeader() {
               to={partnerHref}
               className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
             >
-              Become a partner
+              Work with us
               <ArrowUpRight className="ml-1 size-3.5" />
             </Link>
           </nav>

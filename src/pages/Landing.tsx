@@ -58,10 +58,10 @@ function GradientCard({
 }
 
 const heroStats = [
-  { icon: Signal, label: "Field range records", value: `${rangeRecords.length}` },
+  { icon: Signal, label: "Measured range records", value: `${rangeRecords.length}` },
   { icon: BookOpen, label: "Hardware build guides", value: `${guides.length}` },
-  { icon: Users, label: "Partner networks", value: "26" },
-  { icon: Radio, label: "Median longest link", value: "58 km" },
+  { icon: Users, label: "Teams & partners", value: "26" },
+  { icon: Radio, label: "Longest verified link", value: "58 km" },
 ];
 
 const gradientPanels = [
@@ -88,7 +88,7 @@ const gradientPanels = [
     icon: Users,
     kicker: "For partners",
     title: "Partner hub",
-    body: "Share your network's field data, get early access to new guides, and help shape what Meshwire documents next.",
+    body: "Share deployment data from your network, review upcoming documentation early, and help shape what Project Agora documents next.",
     from: "oklch(0.5_0.18_285)",
     accent: "text-[oklch(0.78_0.16_280)]",
   },
@@ -122,9 +122,8 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.08, ease }}
             className="max-w-3xl text-balance font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl"
-          >
-            Long-range networks,{" "}
-            <span className="text-gradient">built like they'll outlive us</span>
+          >            The solution, documented end to end. {" "}
+            <span className="text-gradient">Built to be understood</span>
           </motion.h1>
 
           <motion.p
@@ -133,9 +132,10 @@ export default function Landing() {
             transition={{ duration: 0.7, delay: 0.16, ease }}
             className="mt-6 max-w-2xl text-pretty text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8"
           >
-            Meshwire is field-tested LoRa documentation: honest hardware
-            guides, range data with its conditions attached, and a partner
-            network of builders who publish what actually works.
+            Project Agora is the documentation home for our long-range LoRa
+            solution: hardware build guides, measured range data with its
+            conditions attached, and resources for the teams and partners who
+            deploy it.
           </motion.p>
 
           <motion.div
@@ -190,14 +190,14 @@ export default function Landing() {
           <div>
             <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
               <Waves className="size-3.5" />
-              Why partners build with us
+              Why teams and partners work with us
             </p>
             <h2 className="text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              Documentation is infrastructure
+              Documentation is part of the solution
             </h2>
             <p className="mt-4 max-w-md leading-7 text-muted-foreground">
               Community networks live or die on whether the next builder can
-              reproduce what the last one did. Meshwire exists so that the
+              reproduce what the last one did. Project Agora exists so that the
               antenna heights, coax runs, and failure stories get written
               down — by the people who measured them.
             </p>
@@ -213,7 +213,7 @@ export default function Landing() {
               <div className="mesh-blob animate-drift-a bottom-[-55%] left-[-20%] size-72 bg-[oklch(0.6_0.15_170/0.3)]" />
               <div className="relative z-[2] space-y-4 font-mono text-[13px] leading-6">
                 <p className="text-muted-foreground">
-                  <span className="text-primary">// what partners publish</span>
+                  <span className="text-primary">// what a deployment record contains</span>
                 </p>
                 {[
                   { k: "antenna", v: "5.8 dBi omni @ 14 m" },
@@ -246,8 +246,8 @@ export default function Landing() {
               Start where you are
             </h2>
             <p className="mt-2 max-w-xl text-muted-foreground">
-              Version 1 keeps the scope tight: build hardware, compare range,
-              join the partner network.
+              Version 1 keeps the scope tight: how the hardware is built, what
+              it achieves in the field, and how to get involved.
             </p>
           </div>
         </motion.div>
@@ -300,12 +300,12 @@ export default function Landing() {
           <motion.div {...fadeUp} transition={{ duration: 0.6, ease }}>
             <MapPin className="mx-auto mb-5 size-6 text-primary" />
             <h2 className="text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              Your network's data belongs in the field guide
+              Your deployment data belongs in the record
             </h2>
             <p className="mx-auto mt-4 max-w-xl leading-7 text-muted-foreground">
-              Partners get a dashboard for their range reports, early drafts of
-              new guides, and a direct line to the editors. Publish once, help
-              every builder after you.
+              Partners get a dashboard for their range reports, early access to
+              new guides, and a direct line to the team. Contribute once, and
+              every team that follows starts ahead.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button size="lg" asChild>
@@ -315,7 +315,7 @@ export default function Landing() {
                 </Link>
               </Button>
               <Button variant="ghost" size="lg" asChild>
-                <Link to="/guides">Just browsing? Read the guides</Link>
+                <Link to="/guides">Just exploring? Read the guides</Link>
               </Button>
             </div>
           </motion.div>

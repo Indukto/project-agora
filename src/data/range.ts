@@ -1,5 +1,5 @@
 /**
- * Meshwire v1 content: field range comparisons.
+ * Project Agora v1 content: field range comparisons.
  * All numbers are field-reported medians, not datasheet promises — with
  * conditions, terrain and caveat attached, because range claims without
  * context are how we all got burned.

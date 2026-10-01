@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** Meshwire brand: concentric signal arcs (a LoRa burst) + wordmark. */
+/** Project Agora brand: concentric signal arcs (a LoRa burst) + wordmark. */
 export function BrandMark({
   className,
   compact = false,
@@ -47,7 +47,7 @@ export function BrandMark({
       </svg>
       {!compact && (
         <span className="font-display text-lg font-semibold tracking-tight">
-          Mesh<span className="text-primary">wire</span>
+          Project&nbsp;<span className="text-primary">Agora</span>
         </span>
       )}
     </span>
