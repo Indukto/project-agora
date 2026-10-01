@@ -2,11 +2,10 @@
  * Telemetry — a pure, deterministic model of what the school station measures.
  *
  * `valueAt(node, ts)` is a pure function: the same node and timestamp always
- * produce the same reading, on the server and in the browser alike. That is
- * what makes the seam real. Today `src/data/measurements.ts` calls it directly
- * so the site works with no backend at all; once a LoRaWAN network server is
- * connected, `src/convex/simulator.ts` calls the *same* functions to write into
- * the `readings` table and the pages switch to `src/convex/sensorData.ts`. No
+ * produce the same reading. That is what makes the seam real. Today
+ * `src/data/measurements.ts` calls it directly, so the site works with no
+ * backend at all; a LoRaWAN network server can call the *same* functions to
+ * write the rows into a database, and the pages switch to reading those. No
  * page changes, and the numbers a school class sees today are the numbers the
  * backend serves tomorrow.
  *

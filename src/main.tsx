@@ -1,7 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
 import { VlyToolbar } from "../vly-toolbar-readonly.tsx";
-import { ConvexAuthProvider } from "@convex-dev/auth/react";
-import { ConvexReactClient } from "convex/react";
 import React, { StrictMode, useEffect, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router";
@@ -90,10 +88,6 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
-
-
-
 function RouteSyncer() {
   const location = useLocation();
   useEffect(() => {
@@ -135,30 +129,31 @@ createRoot(document.getElementById("root")!).render(
       <ToolbarErrorBoundary>
         <VlyToolbar />
       </ToolbarErrorBoundary>
-      <ConvexAuthProvider client={convex}>
-        <BrowserRouter>
-          <RouteSyncer />
-          <Suspense fallback={<RouteLoading />}>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/live" element={<Live />} />
-              <Route path="/statistiken" element={<Statistics />} />
-              <Route path="/karte" element={<MapPage />} />
-              <Route path="/station" element={<Station />} />
-              <Route path="/lorawan" element={<LoRaWan />} />
-              <Route path="/funktechnik" element={<Radio />} />
-              <Route path="/glossar" element={<Glossary />} />
-              <Route path="/projekt" element={<Project />} />
-              <Route path="/export" element={<ExportPage />} />
-              <Route path="/guides" element={<Guides />} />
-              <Route path="/range" element={<Range />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </BrowserRouter>
-        <Toaster />
-      </ConvexAuthProvider>
+      {/* basename is Vite's baked-in base. Without it a project site served
+          from /<repo>/ matches no route, because the router reads "/project-agora/"
+          instead of "/". It is "/" on a custom domain at the apex. */}
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <RouteSyncer />
+        <Suspense fallback={<RouteLoading />}>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/live" element={<Live />} />
+            <Route path="/statistiken" element={<Statistics />} />
+            <Route path="/karte" element={<MapPage />} />
+            <Route path="/station" element={<Station />} />
+            <Route path="/lorawan" element={<LoRaWan />} />
+            <Route path="/funktechnik" element={<Radio />} />
+            <Route path="/glossar" element={<Glossary />} />
+            <Route path="/projekt" element={<Project />} />
+            <Route path="/export" element={<ExportPage />} />
+            <Route path="/guides" element={<Guides />} />
+            <Route path="/range" element={<Range />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+      <Toaster />
     </RootErrorBoundary>
   </StrictMode>,
 );

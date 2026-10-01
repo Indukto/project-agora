@@ -46,10 +46,39 @@ const documentationItems = [
   { label: "Range comparisons", to: "/range" },
 ];
 
+/**
+ * Send the reader back to the top when they use the nav.
+ *
+ * Clicking a link to a *different* page leaves the old scroll offset in place,
+ * landing the reader halfway down a page they have not seen. Clicking the link
+ * for the page they are already on is the sharper case: the route does not
+ * change, nothing re-renders, and the click reads as dead — so there is no
+ * navigation for the browser to correct.
+ *
+ * Handled on click rather than in an effect on `pathname`, because that value
+ * never changes on a self-click and the effect would not fire.
+ */
+function scrollToTop() {
+  window.scrollTo(0, 0);
+}
+
 export function AppHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+
+  /**
+   * Scroll for a nav click, but leave the back button alone.
+   *
+   * The browser restores the scroll offset itself on a POP, and it does that
+   * better than we could — the reader lands where they left off. Snapping to
+   * the top on every click would quietly break that, so a click only scrolls
+   * when it is the one thing the browser cannot fix: a link to the page we are
+   * already on, which causes no navigation and therefore no restore.
+   */
+  const scrollForNav = (to: string) => () => {
+    if (to !== location.pathname) scrollToTop();
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -85,13 +114,23 @@ export function AppHeader() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" aria-label="Project Agora home" className="rounded-md">
+        <Link
+          to="/"
+          aria-label="Project Agora home"
+          className="rounded-md"
+          onClick={scrollForNav("/")}
+        >
           <BrandMark />
         </Link>
 
         <nav className="hidden items-center gap-5 md:flex lg:gap-6">
           {primaryItems.map((item) => (
-            <Link key={item.to} to={item.to} className={navLinkClass(isActive(item.to))}>
+            <Link
+              key={item.to}
+              to={item.to}
+              className={navLinkClass(isActive(item.to))}
+              onClick={scrollForNav(item.to)}
+            >
               {item.label}
             </Link>
           ))}
@@ -111,7 +150,11 @@ export function AppHeader() {
             <DropdownMenuContent align="end" className="w-56">
               {moreItems.map((item) => (
                 <DropdownMenuItem key={item.to} asChild>
-                  <Link to={item.to} className={isActive(item.to) ? "text-primary" : undefined}>
+                  <Link
+                    to={item.to}
+                    className={isActive(item.to) ? "text-primary" : undefined}
+                    onClick={scrollForNav(item.to)}
+                  >
                     {item.label}
                   </Link>
                 </DropdownMenuItem>
@@ -119,7 +162,11 @@ export function AppHeader() {
               <DropdownMenuSeparator />
               {documentationItems.map((item) => (
                 <DropdownMenuItem key={item.to} asChild>
-                  <Link to={item.to} className={isActive(item.to) ? "text-primary" : undefined}>
+                  <Link
+                    to={item.to}
+                    className={isActive(item.to) ? "text-primary" : undefined}
+                    onClick={scrollForNav(item.to)}
+                  >
                     {item.label}
                   </Link>
                 </DropdownMenuItem>
@@ -130,7 +177,9 @@ export function AppHeader() {
 
         <div className="hidden items-center gap-1 md:flex">
           <Button size="sm" asChild>
-            <Link to="/live">Live ansehen</Link>
+            <Link to="/live" onClick={scrollForNav("/live")}>
+              Live ansehen
+            </Link>
           </Button>
         </div>
 
@@ -152,6 +201,7 @@ export function AppHeader() {
               <Link
                 key={item.to}
                 to={item.to}
+                onClick={scrollForNav(item.to)}
                 className={cn(
                   "rounded-xl px-4 py-3 text-sm",
                   isActive(item.to) ? "bg-muted text-primary" : "text-foreground/80",
@@ -166,6 +216,7 @@ export function AppHeader() {
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={scrollForNav(item.to)}
                   className={cn(
                     "rounded-xl px-4 py-3 text-sm",
                     isActive(item.to) ? "bg-muted text-primary" : "text-foreground/80",
@@ -178,6 +229,7 @@ export function AppHeader() {
 
             <Link
               to="/live"
+              onClick={scrollForNav("/live")}
               className="mt-2 inline-flex h-10 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground"
             >
               Live ansehen

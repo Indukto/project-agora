@@ -32,21 +32,47 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # src/convex/_generated/ is gitignored, so `tsc -b` inside `bun run build`
-      # cannot resolve ./api without it. Codegen introspects the live deployment,
-      # which also keeps the types honest when the schema changes.
-      - name: Generate Convex types
+      # Vite needs to know where the site is mounted, because GitHub Pages
+      # serves a project site from /<repo>/ rather than the domain root. Derive
+      # it instead of relying on a repository variable nobody remembers to set:
+      # an unset BASE_PATH silently builds "/" and every /assets/* URL 404s,
+      # which looks exactly like a broken app. An explicit BASE_PATH still
+      # wins, and a custom domain (PAGES_DOMAIN) is served from the apex.
+      - name: Resolve base path
+        id: base
         env:
-          CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
-          CONVEX_DEPLOYMENT: ${{ vars.CONVEX_DEPLOYMENT }}
-          CONVEX_DEPLOYMENT_KEY: ${{ secrets.CONVEX_DEPLOYMENT_KEY }}
-        run: bunx convex codegen
+          BASE_PATH: ${{ vars.BASE_PATH }}
+          PAGES_DOMAIN: ${{ vars.PAGES_DOMAIN }}
+        run: |
+          if [ -n "$BASE_PATH" ]; then
+            echo "Using BASE_PATH from repository variables: $BASE_PATH"
+          elif [ -n "$PAGES_DOMAIN" ]; then
+            BASE_PATH="/"
+          else
+            BASE_PATH="/${GITHUB_REPOSITORY#*/}/"
+          fi
+          echo "Building with BASE_PATH=$BASE_PATH"
+          echo "value=$BASE_PATH" >> "$GITHUB_OUTPUT"
 
       - name: Build
         env:
-          VITE_CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
-          BASE_PATH: ${{ vars.BASE_PATH }}
+          BASE_PATH: ${{ steps.base.outputs.value }}
         run: bun run build
+
+      # A wrong base produces a build that looks fine and deploys blank, so
+      # assert the paths were actually rewritten before the artifact ships.
+      - name: Verify base path was applied
+        env:
+          BASE_PATH: ${{ steps.base.outputs.value }}
+        run: |
+          if ! grep -q "$BASE_PATH" dist/index.html; then
+            echo "::error::dist/index.html does not reference $BASE_PATH — assets would 404"
+            exit 1
+          fi
+          grep -q "location.replace(\"$BASE_PATH\")" dist/404.html || {
+            echo "::error::dist/404.html SPA fallback was not rewritten for $BASE_PATH"
+            exit 1
+          }
 
       # A custom domain at the apex needs the CNAME record committed alongside
       # the site for Pages to keep renewing the certificate. Skipped when the

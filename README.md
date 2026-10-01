@@ -8,8 +8,6 @@ This project uses the following tech stack:
 - Tailwind v4 (for styling)
 - Shadcn UI (for UI components library)
 - Lucide Icons (for icons)
-- Convex (for backend & database)
-- Convex Auth (for authentication)
 - Framer Motion (for animations)
 - feral-react-gradient (`Lagoon.jsx`) — the watercolour engine behind the landing hero
 
@@ -98,29 +96,55 @@ classroom, and the footprint is under two kilometres across. The projection
 carries a cos(latitude) correction so the range circles stay circular; Mercator
 would shear them and quietly misstate the reach.
 
-### The 404 is the landing, with nothing to land on
+### The 404 is a blue screen on desktop
 
-`src/pages/NotFound.tsx` is built exactly like `Landing.tsx`: the generated
-Lagoon wash across the whole viewport, the LoRa arcs above it, a paper veil
-under the copy, the same fade-up reveal. The copy is three lines — a `404`, one
-sentence, two links.
+`src/pages/NotFound.tsx` is a single switch and nothing else:
 
-The one addition is `src/components/site/NotFoundArt.tsx`, which lets the arcs
-drift toward the pointer. A missing page is a frame nobody received, and
-following a signal is what a receiver does; that is the entire interaction. The
-travel is a framer-motion spring rather than a rAF loop, so a fast pointer is
-damped instead of snapping and the rings settle when the visitor stops.
-`SignalBurst` grew an optional `style` prop and its root is now a `motion.svg`,
-which is what lets a caller hand it motion values; the landing passes only
-`className` and is unaffected.
+```tsx
+return coarsePointer ? <NotFoundLagoon /> : <NotFoundBlueScreen ... />;
+```
 
-Under `prefers-reduced-motion` the travel drops to a tenth and the spring is
-bypassed. The rings still follow the pointer, because a page that does not react
-at all is a dead page — but nothing glides across the field of view.
+On a device with a fine pointer, `NotFoundBlueScreen` fills the viewport with
+system blue `#0000AA`, sets monospaced white type, and centres a panel in the
+manner of the crash screens a Windows 3.1 or 95 machine used to show — a `STOP:
+0x00000404` header, the failing path, and a reverse-video bar at the bottom.
+Pressing any key returns to `/`. The handler is bound on `window`, removed on
+unmount, and deliberately does not `preventDefault`, so Ctrl+R still reloads.
 
-An earlier version of this page had a frequency dial, three readouts and a link
-list. It was removed: a lost visitor does not need an explanation, they need to
-be somewhere.
+The panel is `role="alert"`, and it was `alertdialog` until that was looked at
+properly. A dialog role promises a focus trap, modality and focus-on-open, and
+this page does none of them: it contains no focusable element at all and focus
+is never moved into it. `alert` is a live region for an important message, which
+is what a route change into "that address does not exist" is, and it carries no
+focus contract to break. `aria-describedby` went at the same time, because in a
+live region the body text is both the content and the description.
+
+On a touch device that screen would be a trap with no exit, because a keypress
+is the one input it cannot produce. There the route renders the lagoon artwork
+and two links. `useCoarsePointer` in `src/hooks/use-coarse-pointer.ts` is the
+only place the decision is made. It reads `(pointer: coarse)` once per mount
+and ignores `navigator.maxTouchPoints` on purpose: a touchscreen laptop reports
+touch points but also owns a fine pointer and a keyboard, which is exactly the
+machine the blue screen is for.
+
+`SignalBurst` went back to being a plain `<svg>` with no `style` prop once
+nothing needed to hand it motion values.
+
+### One hero, two callers
+
+`src/components/site/Hero.tsx` owns the full-screen lagoon composition: the wash
+import and its stretch, the signal-ring position, the paper veil, the easing
+curve, the reveal variants and the link styling. `Landing.tsx` and
+`NotFoundLagoon` render it and supply only words and links. They were 64
+identical lines apart before, which meant every hero change had to be written
+twice.
+
+`Hero` renders no `main` landmark, because on the landing that belongs to the
+project content further down the page; the touch 404 wraps it in a `main`
+itself. `AppHeader` is left to the caller so it stays a sibling of the hero
+rather than moving inside it. `PageHero` is a different composition on purpose
+— a 52svh band with a kicker and a lede for interior pages — and keeps its own
+layers.
 
 ### Design system additions
 
@@ -161,16 +185,22 @@ takes `now` rather than reading the clock, so a caller can freeze time and the
 export can never disagree with the screen. Today the bodies call the generator;
 when a backend is connected they become query calls and no page changes.
 
-### Convex is wired but not connected
+### Where a backend would plug in
 
-`src/convex/schema.ts` declares four tables — `stations`, `nodes`, `readings`,
-`uplinks` — with the indices the read queries will need. The pages do not read
-them yet, and that is deliberate: this checkout has no deployment,
-`VITE_CONVEX_URL` is the placeholder `https://placeholder-123.convex.cloud`, so
-`src/convex/_generated` does not exist. Any `query` or `mutation` written against
-it would fail to compile and could not be exercised, so the site answers from the
-generator instead and needs no credentials. The schema file carries the
-four-step switch-over.
+There is no backend, and the site is built so that adding one is a local change
+rather than a rewrite. `src/data/measurements.ts` is the only module a page
+imports for readings, so it is the only file that has to change.
+
+The data model the pages already imply: one row per school campus, one row per
+battery node belonging to a campus, a readings row per decoded uplink
+(temperature, humidity, soil moisture, pressure, plus the link quality measured
+on receipt), and a separate uplinks row for raw frame metadata. The two indices
+worth having are `(nodeId, ts)` for a node's history and `(ts)` for everything
+in a time window. `stations` and `nodes` come straight from
+`src/data/fixtures.ts`.
+
+Because the generator is a pure function of (node, timestamp), a backend
+serving the same values serves the numbers the site shows today.
 
 ![Guides placeholder](docs/guides-placeholder.png)
 
@@ -181,42 +211,41 @@ invented content and were deleted. Both pages now render the shared
 
 ## Setup
 
-This project is set up already and running on a cloud environment, as well as a convex development in the sandbox.
+`bun install`, then `bun run dev`.
 
 ## Environment Variables
 
-The project is set up with project specific CONVEX_DEPLOYMENT and VITE_CONVEX_URL environment variables on the client side.
-
-The convex server has a separate set of environment variables that are accessible by the convex backend.
-
-Currently, these variables include auth-specific keys: JWKS, JWT_PRIVATE_KEY, and SITE_URL.
+None. The site has no backend and no build-time secrets, so there is no `.env`
+to configure.
 
 ## Deploying to GitHub Pages
 
-`.github/workflows/deploy.yml` builds on every push to `main` and publishes `dist/`. The Convex backend stays hosted on Convex Cloud — Pages only serves the static frontend, so there is no server component to host.
+`.github/workflows/deploy.yml` builds on every push to `main` and publishes `dist/`. Pages only serves the static frontend, so there is no server component to host.
 
-Repository **Actions → Variables**:
+**The build needs no credentials at all.** Every page answers from the deterministic model in `src/lib/telemetry.ts` over the fixtures in `src/data/`, so there is no backend and nothing to configure.
+
+Repository **Actions → Variables** (both optional):
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
-| `VITE_CONVEX_URL` | yes | Convex deployment URL, baked into the bundle at build time. |
-| `CONVEX_DEPLOYMENT` | yes | Deployment name, used by the codegen step. |
-| `BASE_PATH` | no | Defaults to `/`. Only needed for subpath hosting. |
+| `BASE_PATH` | no | Overrides the mount point. Leave unset unless the derived one is wrong. |
 | `PAGES_DOMAIN` | no | When set, the workflow writes `dist/CNAME` for custom-domain hosting. |
-
-Repository **Settings → Secrets**: `CONVEX_DEPLOYMENT_KEY` (a Convex admin key for the deployment). Codegen introspects the live deployment, which is why `src/convex/_generated/` — gitignored — does not need to be committed.
 
 In the repository, set **Settings → Pages → Source** to **GitHub Actions** once, before the first run.
 
 ### Custom domain vs subpath
 
-For a custom domain at the apex, `BASE_PATH` stays unset and every asset resolves against `/`. To host on `https://<user>.github.io/project-agora/` instead, set `BASE_PATH=/project-agora/`; the `pagesFallback` plugin in `vite.config.ts` keeps the 404 redirect pointed at that prefix.
+The workflow's `Resolve base path` step derives the mount point itself: `/<repo>/` for a project site, `/` when `PAGES_DOMAIN` is set, and `vars.BASE_PATH` when that is set explicitly. This is derived rather than left to a variable because the failure is silent — an unset `BASE_PATH` builds `base: "/"`, every `/assets/*` URL 404s, and the deployed site is a blank page with a green build. A `Verify base path was applied` step then asserts the base reached both `dist/index.html` and the rewritten `dist/404.html` before the artifact is uploaded.
 
-Note that `VITE_CONVEX_URL` is embedded in public JavaScript by design — it is a deployment identifier, not a secret. The admin key is the only value that must stay in secrets.
+`<BrowserRouter basename={import.meta.env.BASE_URL}>` in `src/main.tsx` reads the same value. Without it a project site served from `/project-agora/` matches no route at all: the router sees `/project-agora/` where it expects `/`, so every URL renders the 404 page. `public/.nojekyll` stops Jekyll from stripping `_`-prefixed build output.
 
-### Deep links and the auth callback
+### Deep links
 
-GitHub Pages has no SPA rewrite, so `/guides` or `/dashboard` would serve its 404 rather than the app. `public/404.html` parks the requested path in `sessionStorage` and redirects to the base; `src/main.tsx` restores it with `history.replaceState` **before** `createRoot`, so the router's first render already sees the right URL. That ordering matters for Convex Auth, whose `/callback` exchange only fires when the provider boots on that exact path.
+GitHub Pages has no SPA rewrite, so `/glossar` or `/dashboard` would serve its 404 rather than the app. `public/404.html` parks the requested path in `sessionStorage` and redirects to the base; `src/main.tsx` restores it with `history.replaceState` **before** `createRoot`, so the router's first render already sees the right URL and there is no visible redirect. The 404 is rewritten for the base at build time by the `pagesFallback` plugin in `vite.config.ts`, because `public/` is copied verbatim and cannot read `base` at runtime.
+
+### No credentials, and no codegen
+
+The build needs no secrets. There is no backend and no Convex deployment — `src/convex/` was removed along with `convex.json`, and the only remaining mentions of Convex in `src/` are comments about where a backend would plug in. The workflow's `bunx convex codegen` step is gone for that reason; leaving it in made every run fail before the build even started, because `CONVEX_URL`, `CONVEX_DEPLOYMENT` and `CONVEX_DEPLOYMENT_KEY` were never configured. If a backend is ever added, codegen belongs back in the workflow, and the generated types must stop being gitignored if `tsc -b` is to resolve them.
 
 ### One known build blocker — resolved
 
@@ -227,63 +256,8 @@ turned the workflow red. `formatNumber` now accepts `0 | 1 | 2`, which is what
 the LoRa data rates need — 0.25 kbit/s at SF12 rounds to "0" at zero decimals
 and to a correct "0,3" at two.
 
-Two errors remain in `tsc -b`, and both predate the AGORA pages: `users.ts` and
-`hooks/use-auth.ts` import from `src/convex/_generated`, which is gitignored and
-generated by `npx convex dev`. They clear the moment a real deployment is
-configured; nothing in the new code imports it.
+`tsc -b` is now clean, with no errors and no exclusions.
 
-
-# Using Authentication (Important!)
-
-You must follow these conventions when using authentication.
-
-## Auth is already set up.
-
-All convex authentication functions are already set up. The auth currently uses email OTP and anonymous users, but can support more.
-
-The email OTP configuration is defined in `src/convex/auth/emailOtp.ts`. DO NOT MODIFY THIS FILE.
-
-Also, DO NOT MODIFY THESE AUTH FILES: `src/convex/auth.config.ts` and `src/convex/auth.ts`.
-
-## Using Convex Auth on the backend
-
-On the `src/convex/users.ts` file, you can use the `getCurrentUser` function to get the current user's data.
-
-## Using Convex Auth on the frontend
-
-There is currently no sign-in UI: the team sign-in button, the `/auth` route, and
-`src/pages/Auth.tsx` were removed, and `/dashboard` is public. The Convex auth
-stack (providers, backend, `useAuth` hook) is still wired up and ready if
-accounts come back.
-
-You MUST use this hook to get user data. Never do this yourself without the hook:
-```typescript
-import { useAuth } from "@/hooks/use-auth";
-
-const { isLoading, isAuthenticated, user, signIn, signOut } = useAuth();
-```
-
-## Protected Routes
-
-`/dashboard` is public, and the `RequireAuth` wrapper was removed along with the
-sign-in flow. If accounts return, restore `RequireAuth` (or an equivalent gate)
-before adding a route that needs a signed-in user, and give the blocked screen a
-`title` and `description` so visitors know what they are missing.
-
-## Authorization
-
-You can perform authorization checks on the frontend and backend.
-
-On the frontend, you can use the `useAuth` hook to get the current user's data and authentication state.
-
-You should also be protecting queries, mutations, and actions at the base level, checking for authorization securely.
-
-## Complete authenticated products
-
-When the requested product implies accounts, a workspace, a dashboard, or other
-signed-in functionality, the task is not complete with only a landing page and
-auth form. Build the main authenticated experience, protect its route, and verify
-that signing in reaches it.
 
 # Frontend Conventions
 
@@ -409,57 +383,3 @@ Always ensure your larger dialogs have a scroll in its content to ensure that it
 
 Ideally, instead of using a new page, use a Dialog instead. 
 
-# Using the Convex backend
-
-You will be implementing the convex backend. Follow your knowledge of convex and the documentation to implement the backend.
-
-## The Convex Schema
-
-You must correctly follow the convex schema implementation.
-
-The schema is defined in `src/convex/schema.ts`.
-
-Do not include the `_id` and `_creationTime` fields in your queries (it is included by default for each table).
-Do not index `_creationTime` as it is indexed for you. Never have duplicate indexes.
-
-
-## Convex Actions: Using CRUD operations
-
-When running anything that involves external connections, you must use a convex action with "use node" at the top of the file.
-
-You cannot have queries or mutations in the same file as a "use node" action file. Thus, you must use pre-built queries and mutations in other files.
-
-You can also use the pre-installed internal crud functions for the database:
-
-```ts
-// in convex/users.ts
-import { crud } from "convex-helpers/server/crud";
-import schema from "./schema.ts";
-
-export const { create, read, update, destroy } = crud(schema, "users");
-
-// in some file, in an action:
-const user = await ctx.runQuery(internal.users.read, { id: userId });
-
-await ctx.runMutation(internal.users.update, {
-  id: userId,
-  patch: {
-    status: "inactive",
-  },
-});
-```
-
-
-## Common Convex Mistakes To Avoid
-
-When using convex, make sure:
-- Document IDs are referenced as `_id` field, not `id`.
-- Document ID types are referenced as `Id<"TableName">`, not `string`.
-- Document object types are referenced as `Doc<"TableName">`.
-- Keep schemaValidation to false in the schema file.
-- You must correctly type your code so that it passes the type checker.
-- You must handle null / undefined cases of your convex queries for both frontend and backend, or else it will throw an error that your data could be null or undefined.
-- Always use the `@/folder` path, with `@/convex/folder/file.ts` syntax for importing convex files.
-- This includes importing generated files like `@/convex/_generated/server`, `@/convex/_generated/api`
-- Remember to import functions like useQuery, useMutation, useAction, etc. from `convex/react`
-- NEVER have return type validators.
