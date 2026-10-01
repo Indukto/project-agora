@@ -37,7 +37,7 @@ export function BrandMark({
         />
       </svg>
       {!compact && (
-        <span className="text-lg font-medium tracking-tight">
+        <span className="font-display text-lg tracking-tight">
           Project&nbsp;<span className="text-primary">Agora</span>
         </span>
       )}

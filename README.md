@@ -17,6 +17,34 @@ All relevant files live in the 'src' directory.
 
 Use bun for the package manager.
 
+![Landing page — lagoon watercolour wash, CLEAR HANADA theme](docs/landing.png)
+
+## Colour and type: CLEAR HANADA + Instrument Serif
+
+The site runs on the CLEAR HANADA stop (`#30A7A0`) from the feralui `wc-lagoon`
+watercolour recipe that `src/components/site/LagoonWash.tsx` renders on the
+landing hero. The primary is that hue darkened one tonal step to `#157A72` so
+white button text keeps AA contrast; chart slots follow the hanada → lagoon
+ramp rather than the old pink M3 set. `gradient-hanada-mist` is the light wash
+band behind the landing entry cards.
+
+No surface on the site is pure white. `public/lagoon.jpg` is the full 1920×1080
+lagoon render with the "Project Agora" wordmark baked into its middle band;
+`public/lagoon-paper.svg` wraps it in a 900×450 `viewBox` that crops to the
+wordmark-free upper-left quadrant and lays a 66% white veil over it, so the tile
+reads as pale paper. The `body` in `src/index.css` repeats that tile at 720px with
+`background-attachment: fixed`, and the base tokens moved off white accordingly
+(`--background: #f6fbfa`, `--card: #fbfefe`, surface tiers into the lagoon
+family). `prefers-reduced-transparency` drops the image and falls back to the
+flat token colour.
+
+The lagoon hero is built as a saturated `gradient-lagoon` colour field with the
+watercolour canvas composited over it in `mix-blend-mode: multiply`, so the wash
+adds pigment density, blooms and paper grain while the gradient supplies the
+hue. Display type is Instrument Serif (headings, wordmark, card titles); body
+and code stay on Roboto. Instrument Serif ships one weight, so headings are
+pinned to `font-normal` rather than asking for a synthesised bold.
+
 ![Guides placeholder](docs/guides-placeholder.png)
 
 The guides and range pages are honest placeholders until real build notes and

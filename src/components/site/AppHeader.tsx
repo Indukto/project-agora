@@ -30,8 +30,12 @@ export function AppHeader() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 bg-background transition-shadow duration-200",
-        scrolled && "shadow-[0_1px_0_0_var(--border)]",
+        // Translucent rather than a solid `bg-background`: the header is fixed,
+        // so an opaque bar would paint over the lagoon paper (and over the
+        // landing hero) for the full width of every page. The blur keeps the
+        // nav legible over whatever scrolls beneath it.
+        "fixed inset-x-0 top-0 z-50 border-b border-transparent bg-background/80 backdrop-blur-md transition-shadow duration-200",
+        scrolled && "border-border shadow-[0_1px_0_0_var(--border)]",
       )}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -80,7 +84,7 @@ export function AppHeader() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-border bg-background md:hidden">
+        <div className="border-t border-border bg-background/95 backdrop-blur-md md:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4">
             {navItems.map((item) => (
               <Link

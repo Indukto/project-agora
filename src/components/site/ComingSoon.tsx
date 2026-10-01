@@ -30,7 +30,7 @@ export function ComingSoon({
           <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted">
             <Construction className="size-5 text-muted-foreground" />
           </div>
-          <p className="mt-4 font-medium">Nothing published here yet</p>
+          <p className="font-display mt-4 text-lg">Nothing published here yet</p>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
             This section is still being written. We would rather show an empty
             shelf than numbers and build notes we cannot stand behind — real

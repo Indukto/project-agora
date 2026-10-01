@@ -40,7 +40,7 @@ export default function Dashboard() {
           {/* Contribute */}
           <Card className="rounded-3xl border-border bg-surface-1 shadow-none">
             <CardHeader>
-              <CardTitle className="text-lg font-medium">
+              <CardTitle className="font-display text-lg">
                 Contribute field data
               </CardTitle>
               <CardDescription>
@@ -76,7 +76,7 @@ export default function Dashboard() {
           {/* Latest reports */}
           <Card className="rounded-3xl border-border bg-surface-1 shadow-none">
             <CardHeader>
-              <CardTitle className="text-lg font-medium">
+              <CardTitle className="font-display text-lg">
                 Latest field reports
               </CardTitle>
               <CardDescription>
@@ -86,7 +86,7 @@ export default function Dashboard() {
             <CardContent>
               <div className="rounded-2xl border border-dashed border-border bg-background px-6 py-10 text-center">
                 <Construction className="mx-auto size-5 text-muted-foreground" />
-                <p className="mt-3 text-sm font-medium">No reports yet</p>
+                <p className="font-display mt-3 text-sm">No reports yet</p>
                 <p className="mx-auto mt-1.5 max-w-xs text-sm leading-6 text-muted-foreground">
                   Submissions are not open in this version. Verified results
                   appear here — and on the range page — when they are real.

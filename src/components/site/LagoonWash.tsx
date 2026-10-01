@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
  * "Lagoon" — a soft blue-teal watercolor wash.
  *
  * Recipe (feralui `wc-lagoon`):
- *   stops   INKED LAPIS #176B87 · CLEAR HANADA #30A7A0 / #7AC7C4 · SOFT SAND #E7CFA6
+ *   stops   INKED LAPIS #0D5A75 · CLEAR HANADA #2AA79F / #63C8C1 · SOFT SAND #E7CFA6
  *   params  technique "wash", seed 17, angle 330, layers 5, coverage 76,
  *           wetness 74, spread 48, pigment 56, blooms 30, granulation 30,
  *           edges 40, texture 26, paperWarmth 20, speed 26
@@ -17,16 +17,20 @@ import { useEffect, useRef } from "react";
  * as pigment on paper rather than paint. Colour = paper × exp(-absorption).
  *
  * Rendered into a reduced-resolution buffer and upscaled (watercolour is soft),
- * with a very slow flow drift for life. The CSS gradient behind the canvas is
- * the fallback if 2D context is unavailable.
+ * with a very slow flow drift for life. The canvas is composited in `multiply`
+ * so the saturated `.gradient-lagoon` colour field underneath supplies the hue
+ * and the wash only adds pigment density, texture and edge behaviour on top.
+ * The CSS gradient is also the fallback if 2D context is unavailable.
  */
 
 type RGB = [number, number, number];
 
 const STOPS: RGB[] = [
-  [0x17, 0x6b, 0x87], // inked lapis
-  [0x30, 0xa7, 0xa0], // clear hanada
-  [0x7a, 0xc7, 0xc4],
+  [0x0d, 0x5a, 0x75], // inked lapis
+  [0x17, 0x87, 0x9e], // lagoon shelf
+  [0x2a, 0xa7, 0x9f], // clear hanada
+  [0x63, 0xc8, 0xc1],
+  [0xa9, 0xdc, 0xd2],
   [0xe7, 0xcf, 0xa6], // soft sand
 ];
 
@@ -396,7 +400,14 @@ function renderFrame(
   ctx.putImageData(img, 0, 0);
 }
 
-export function LagoonWash({ className }: { className?: string }) {
+export function LagoonWash({
+  className,
+  opacity = 0.72,
+}: {
+  className?: string;
+  /** Wash strength: 1 is full pigment, lower leaves more of the gradient. */
+  opacity?: number;
+}) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -486,6 +497,8 @@ export function LagoonWash({ className }: { className?: string }) {
         width: "100%",
         height: "100%",
         display: "block",
+        mixBlendMode: "multiply",
+        opacity,
       }}
     />
   );

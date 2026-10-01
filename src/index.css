@@ -40,9 +40,11 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  /* Project Agora — M3 light theme surfaces, states, and pink primary */
+  /* Project Agora — M3 light theme surfaces, states, and CLEAR HANADA primary */
+  /* Display face is Instrument Serif (high-contrast editorial serif); body and
+     code stay on Roboto so long-form docs remain comfortable to read. */
   --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
   --font-mono: "Roboto Mono", ui-monospace, monospace;
   --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
@@ -56,70 +58,79 @@
 /* CHANGE VALUES FOR THEME */
 :root {
   --radius: 0.75rem;
-  /* M3 light scheme: white surfaces, neutral-on-white, pink primary */
-  --background: #ffffff;
-  --foreground: #1c1b1f;
-  --card: #ffffff;
-  --card-foreground: #1c1b1f;
-  --popover: #ffffff;
-  --popover-foreground: #1c1b1f;
-  /* Pink primary (M3-style tonal) */
-  --primary: #b4004e;
+  /* M3 light scheme: white surfaces, neutral-on-white, CLEAR HANADA primary.
+     Hue family is the feralui `wc-lagoon` wash stop CLEAR HANADA (#30A7A0),
+     darkened one tonal step (#157A72) so white button text stays AA-readable. */
+  --background: #f6fbfa;
+  --foreground: #17211f;
+  --card: #fbfefe;
+  --card-foreground: #17211f;
+  --popover: #fbfefe;
+  --popover-foreground: #17211f;
+  /* Primary — deep clear hanada */
+  --primary: #157a72;
   --primary-foreground: #ffffff;
-  /* M3 secondary-container: soft pink tint used for tonal chips/highlights */
-  --secondary-container: #ffd9e4;
-  --secondary-container-foreground: #31101d;
-  --secondary: #f3edf7;
-  --secondary-foreground: #1d192b;
-  --muted: #f6f2fa;
-  --muted-foreground: #49454f;
-  --accent: #fce8ee;
-  --accent-foreground: #31101d;
+  /* M3 secondary-container: soft hanada tint for tonal chips/highlights */
+  --secondary-container: #cdeee9;
+  --secondary-container-foreground: #04322e;
+  --secondary: #eef5f4;
+  --secondary-foreground: #17211f;
+  --muted: #f1f7f6;
+  --muted-foreground: #3c4a48;
+  --accent: #dcf1ee;
+  --accent-foreground: #04322e;
   --destructive: #b3261e;
-  --border: #e5e0e9;
-  --input: #d9d4e0;
-  --ring: #b4004e;
-  --chart-1: #b4004e;
-  --chart-2: #7d5260;
-  --chart-3: #6750a4;
-  --chart-4: #7d5260;
-  --chart-5: #b58392;
-  --sidebar: #fce8ee;
-  --sidebar-foreground: #31111d;
-  --sidebar-primary: #b4004e;
+  --border: #d5e6e4;
+  --input: #c2d9d6;
+  --ring: #157a72;
+  --chart-1: #157a72;
+  --chart-2: #30a7a0;
+  --chart-3: #7ac7c4;
+  --chart-4: #176b87;
+  --chart-5: #e7cfa6;
+  --sidebar: #e5f3f1;
+  --sidebar-foreground: #04322e;
+  --sidebar-primary: #157a72;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ffd9e4;
-  --sidebar-accent-foreground: #31111d;
-  --sidebar-border: #e5e0e9;
-  --sidebar-ring: #b4004e;
+  --sidebar-accent: #cdeee9;
+  --sidebar-accent-foreground: #04322e;
+  --sidebar-border: #d5e6e4;
+  --sidebar-ring: #157a72;
   /* M3 surface tiers on white (very subtle elevation tints) */
-  --surface-1: #faf7fa;
-  --surface-2: #f5f0f4;
-  --surface-3: #efe8ee;
+  --surface-1: #f1f9f8;
+  --surface-2: #e9f4f2;
+  --surface-3: #ddeeea;
   /* Green for live/online states */
   --success: #1e6b3a;
   --success-foreground: #ffffff;
 }
 
 @layer utilities {
-  /* Lagoon gradient (feralui palette) — oklab interpolation with hex fallback */
+  /* Lagoon gradient (feralui wc-lagoon palette) — the base colour field the
+     LagoonWash canvas paints texture into. Kept saturated so the lagoon reads
+     as water: inked lapis in the corner, clear hanada through the middle,
+     pale sand where the shallows run out. */
   .gradient-lagoon {
     background: linear-gradient(
-      135deg,
-      #176b87 12.5%,
-      #30a7a0 37.5%,
-      #7ac7c4 62.5%,
-      #e7cfa6 87.5%
+      148deg,
+      #0d5a75 0%,
+      #17879e 22%,
+      #2aa79f 45%,
+      #63c8c1 68%,
+      #a9dcd2 86%,
+      #e7cfa6 100%
     );
   }
-  @supports (background: linear-gradient(135deg in oklab, red, blue)) {
+  @supports (background: linear-gradient(148deg in oklab, red, blue)) {
     .gradient-lagoon {
       background: linear-gradient(
-        135deg in oklab,
-        #176b87 12.5%,
-        #30a7a0 37.5%,
-        #7ac7c4 62.5%,
-        #e7cfa6 87.5%
+        148deg in oklab,
+        #0d5a75 0%,
+        #17879e 22%,
+        #2aa79f 45%,
+        #63c8c1 68%,
+        #a9dcd2 86%,
+        #e7cfa6 100%
       );
     }
   }
@@ -134,12 +145,26 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    /* Lagoon paper: a pale crop of the rendered wash (public/lagoon-paper.svg),
+       tiled so no surface on the site is ever pure white. Fixed attachment
+       keeps it still while content scrolls over it. */
+    background-image: url("/lagoon-paper.svg");
+    background-size: 720px auto;
+    background-repeat: repeat;
+    background-attachment: fixed;
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    body {
+      background-image: none;
+    }
   }
   h1,
   h2,
   h3,
   h4 {
-    @apply font-sans tracking-normal;
+    /* Instrument Serif ships a single weight; asking for medium would
+       synthesise a fake bold, so headings are pinned to normal. */
+    @apply font-display font-normal tracking-normal;
   }
   button:not([disabled]),
   [role="button"]:not([disabled]) {
