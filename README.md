@@ -98,6 +98,30 @@ classroom, and the footprint is under two kilometres across. The projection
 carries a cos(latitude) correction so the range circles stay circular; Mercator
 would shear them and quietly misstate the reach.
 
+### The 404 is the landing, with nothing to land on
+
+`src/pages/NotFound.tsx` is built exactly like `Landing.tsx`: the generated
+Lagoon wash across the whole viewport, the LoRa arcs above it, a paper veil
+under the copy, the same fade-up reveal. The copy is three lines — a `404`, one
+sentence, two links.
+
+The one addition is `src/components/site/NotFoundArt.tsx`, which lets the arcs
+drift toward the pointer. A missing page is a frame nobody received, and
+following a signal is what a receiver does; that is the entire interaction. The
+travel is a framer-motion spring rather than a rAF loop, so a fast pointer is
+damped instead of snapping and the rings settle when the visitor stops.
+`SignalBurst` grew an optional `style` prop and its root is now a `motion.svg`,
+which is what lets a caller hand it motion values; the landing passes only
+`className` and is unaffected.
+
+Under `prefers-reduced-motion` the travel drops to a tenth and the spring is
+bypassed. The rings still follow the pointer, because a page that does not react
+at all is a dead page — but nothing glides across the field of view.
+
+An earlier version of this page had a frequency dial, three readouts and a link
+list. It was removed: a lost visitor does not need an explanation, they need to
+be somewhere.
+
 ### Design system additions
 
 The new pages extend the landing's vocabulary rather than inventing a dashboard.

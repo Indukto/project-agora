@@ -8,16 +8,28 @@
  * `prefers-reduced-motion`, where the static rings remain.
  */
 
+import { motion, type MotionStyle } from "framer-motion";
+
 const STATIC_RINGS = [58, 100, 142, 184];
 const PULSE_DELAYS = ["0s", "1.2s", "2.4s", "3.6s"];
 
-export function SignalBurst({ className }: { className?: string }) {
+/** The root is a `motion.svg` rather than a plain one so a caller can hand it a
+ *  pair of motion values and have the rings drift. The landing passes only
+ *  `className` and is unaffected; nothing here knows about pointers. */
+export function SignalBurst({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: MotionStyle;
+}) {
   return (
-    <svg
+    <motion.svg
       viewBox="0 0 400 400"
       fill="none"
       aria-hidden="true"
       className={className}
+      style={style}
     >
       {/* Drawn rings: the signal already sent. */}
       <g stroke="currentColor">
@@ -69,6 +81,6 @@ export function SignalBurst({ className }: { className?: string }) {
         fill="currentColor"
         className="signal-burst-core"
       />
-    </svg>
+    </motion.svg>
   );
 }

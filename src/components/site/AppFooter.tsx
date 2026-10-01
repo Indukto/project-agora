@@ -60,9 +60,8 @@ export function AppFooter() {
         </div>
       </div>
       <div className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:px-6">
-          <span>© {new Date().getFullYear()} Project Agora</span>
-          <span>868 / 915 / 433 MHz</span>
+        <div className="mx-auto max-w-6xl px-4 py-5 text-xs text-muted-foreground sm:px-6">
+          © {new Date().getFullYear()} Project Agora
         </div>
       </div>
     </footer>
