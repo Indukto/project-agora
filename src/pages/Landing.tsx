@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/site/AppHeader";
 import { AppFooter } from "@/components/site/AppFooter";
+import { LagoonWash } from "@/components/site/LagoonWash";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 
@@ -22,9 +23,10 @@ export default function Landing() {
     <div className="min-h-screen">
       <AppHeader />
 
-      {/* ── The gradient is the design ── */}
-      <section className="gradient-lagoon">
-        <div className="mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pt-40 pb-16 sm:px-6 sm:pb-20">
+      {/* ── The wash is the design ── */}
+      <section className="gradient-lagoon relative overflow-hidden">
+        <LagoonWash />
+        <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pt-40 pb-16 sm:px-6 sm:pb-20">
           <div className="max-w-xl">
             <h1 className="text-4xl font-medium leading-[1.1] tracking-tight text-white sm:text-5xl">
               Project Agora
