@@ -4,27 +4,27 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-/* Material Design 3 button system: pill-shaped, 40px min height, label-large
- * type, state-layer hovers, tonal elevation instead of hard shadows. */
+/* Material Design 3 buttons on light surfaces: filled (pink), tonal
+ * (secondary container), outlined, and text, with state-layer hovers. */
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium tracking-[0.01em] transition-[background-color,box-shadow,transform,color] duration-200 outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-[1.1rem] [&_svg]:shrink-0 select-none active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium tracking-[0.01em] transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-[1.1rem] [&_svg]:shrink-0 select-none",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-[0_1px_3px_oklch(0_0_0/0.3),0_4px_12px_-4px_var(--glow)] hover:shadow-[0_2px_6px_oklch(0_0_0/0.3),0_6px_18px_-4px_var(--glow)] hover:brightness-110",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-primary text-primary-foreground hover:bg-[#8f0040]",
         tonal:
-          "bg-primary/15 text-primary hover:bg-primary/25",
+          "bg-secondary-container text-secondary-container-foreground hover:bg-[#ffccdb]",
         outline:
-          "border border-border bg-transparent text-foreground hover:bg-primary/10 hover:border-primary/40",
+          "border border-input text-primary bg-transparent hover:bg-accent",
         ghost:
-          "text-foreground/80 hover:bg-primary/10 hover:text-foreground",
+          "text-primary bg-transparent hover:bg-accent",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-[#e8e0ec]",
         destructive:
-          "bg-destructive/15 text-destructive hover:bg-destructive/25",
+          "bg-destructive text-white hover:bg-[#8f1f19]",
         link:
-          "text-primary underline-offset-4 hover:underline rounded-sm active:scale-100",
+          "text-primary underline-offset-4 hover:underline bg-transparent",
       },
       size: {
         default: "h-10 px-6",

@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 export function AppFooter() {
   return (
-    <footer className="relative border-t border-border/60">
+    <footer className="border-t border-border bg-surface-1">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="space-y-3">
           <BrandMark />
@@ -11,20 +11,15 @@ export function AppFooter() {
             Documentation for Project Agora, a long-range LoRa solution: how
             the hardware is built, what it achieves in the field, and why.
           </p>
-          <p className="text-xs text-muted-foreground/70">
-            Field numbers contributed by partner teams.
-          </p>
         </div>
 
         <div>
-          <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Version 1
-          </h4>
+          <h4 className="mb-3 text-sm font-medium">Version 1</h4>
           <ul className="space-y-2.5 text-sm">
             <li>
               <Link
                 to="/guides"
-                className="text-foreground/80 transition-colors hover:text-primary"
+                className="text-foreground/75 transition-colors hover:text-primary"
               >
                 Hardware guides
               </Link>
@@ -32,7 +27,7 @@ export function AppFooter() {
             <li>
               <Link
                 to="/range"
-                className="text-foreground/80 transition-colors hover:text-primary"
+                className="text-foreground/75 transition-colors hover:text-primary"
               >
                 Range comparisons
               </Link>
@@ -41,22 +36,18 @@ export function AppFooter() {
         </div>
 
         <div>
-          <h4 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Coming in v2
-          </h4>
-          <ul className="space-y-2.5 text-sm text-muted-foreground/60">
+          <h4 className="mb-3 text-sm font-medium">Later versions</h4>
+          <ul className="space-y-2.5 text-sm text-muted-foreground">
             <li>Resource help center</li>
-            <li>Forums &amp; chat</li>
+            <li>Forums and chat</li>
             <li>Meet-up maps</li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-border/40">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-muted-foreground/70 sm:flex-row sm:px-6">
-          <span>© {new Date().getFullYear()} Project Agora. Open documentation.</span>
-          <span className="font-mono text-[11px]">
-            868&nbsp;/&nbsp;915&nbsp;/&nbsp;433&nbsp;MHz — build responsibly
-          </span>
+      <div className="border-t border-border">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs text-muted-foreground sm:flex-row sm:px-6">
+          <span>© {new Date().getFullYear()} Project Agora</span>
+          <span>868 / 915 / 433 MHz</span>
         </div>
       </div>
     </footer>

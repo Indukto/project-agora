@@ -16,37 +16,28 @@ export function BrandMark({
         aria-hidden="true"
         fill="none"
       >
-        <rect
-          x="1"
-          y="1"
-          width="30"
-          height="30"
-          rx="9"
-          className="fill-primary/15 stroke-primary/40"
-          strokeWidth="1.5"
-        />
-        <circle cx="10.5" cy="21.5" r="2.2" className="fill-primary" />
+        <circle cx="11" cy="21" r="2.4" className="fill-primary" />
         <path
-          d="M15.5 17.5a8.2 8.2 0 0 1 2.4 5.8"
+          d="M15.5 16.5a8.2 8.2 0 0 1 2.4 5.8"
           className="stroke-primary"
-          strokeWidth="2"
+          strokeWidth="2.2"
           strokeLinecap="round"
         />
         <path
-          d="M19.8 13.2a14.3 14.3 0 0 1 4.2 10.1"
-          className="stroke-primary/60"
-          strokeWidth="2"
+          d="M19.8 12.2a14.3 14.3 0 0 1 4.2 10.1"
+          className="stroke-primary/55"
+          strokeWidth="2.2"
           strokeLinecap="round"
         />
         <path
-          d="M24.1 8.9a20.4 20.4 0 0 1 6 14.4"
-          className="stroke-primary/30"
-          strokeWidth="2"
+          d="M24.1 7.9a20.4 20.4 0 0 1 6 14.4"
+          className="stroke-primary/25"
+          strokeWidth="2.2"
           strokeLinecap="round"
         />
       </svg>
       {!compact && (
-        <span className="font-display text-lg font-semibold tracking-tight">
+        <span className="text-lg font-medium tracking-tight">
           Project&nbsp;<span className="text-primary">Agora</span>
         </span>
       )}

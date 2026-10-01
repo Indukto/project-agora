@@ -16,7 +16,6 @@ import {
 
 import { useAuth } from "@/hooks/use-auth";
 import { BrandMark } from "@/components/site/BrandMark";
-import { MeshHero } from "@/components/site/MeshHero";
 import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
@@ -112,21 +111,20 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
 
   return (
     <div className="relative min-h-screen">
-      <MeshHero />
       {/* Auth Content */}
-      <div className="relative z-[2] flex flex-col">
+      <div className="relative flex flex-col">
         <div className="flex items-center justify-center px-4 pt-20 pb-10">
           <Link to="/" className="absolute top-5 left-5">
             <BrandMark />
           </Link>
-        <Card className="min-w-[350px] border-border/70 bg-card/85 shadow-xl backdrop-blur-xl">
+        <Card className="min-w-[350px] border-border shadow-sm">
           {step === "signIn" ? (
             <>
               <CardHeader className="text-center">
                 <div className="mb-1 flex justify-center">
                   <BrandMark compact />
                 </div>
-                <CardTitle className="font-display text-xl">Project Agora</CardTitle>
+                <CardTitle className="text-xl">Project Agora</CardTitle>
                 <CardDescription>
                   Team and partner sign-in — enter your email to log in or sign up
                 </CardDescription>
@@ -273,8 +271,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </>
           )}
 
-          <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-surface-2/80 border-t rounded-b-3xl">
-            Partner accounts power the field-data program. Browsers stay free.
+          <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-muted border-t rounded-b-3xl">
+            Partner accounts power the field-data program. Browsing stays free.
           </div>
         </Card>
         </div>
