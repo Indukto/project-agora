@@ -11,22 +11,20 @@ This project uses the following tech stack:
 - Convex (for backend & database)
 - Convex Auth (for authentication)
 - Framer Motion (for animations)
-- Three js (for 3d models)
+- feral-react-gradient (`Lagoon.jsx`) — the watercolour engine behind the landing hero
 
 All relevant files live in the 'src' directory.
 
 Use bun for the package manager.
 
-![Landing page — lagoon watercolour wash, CLEAR HANADA theme](docs/landing.png)
+![Landing page — fullscreen animated Lagoon watercolour with LoRa signal rings](docs/landing.png)
 
 ## Colour and type: CLEAR HANADA + Instrument Serif
 
-The site runs on the CLEAR HANADA stop (`#30A7A0`) from the feralui `wc-lagoon`
-watercolour recipe that `src/components/site/LagoonWash.tsx` renders on the
-landing hero. The primary is that hue darkened one tonal step to `#157A72` so
-white button text keeps AA contrast; chart slots follow the hanada → lagoon
-ramp rather than the old pink M3 set. `gradient-hanada-mist` is the light wash
-band behind the landing entry cards.
+The site runs on the CLEAR HANADA stop (`#30A7A0`) from the `Lagoon`
+watercolour recipe. The primary is that hue darkened one tonal step to `#157A72`
+so white button text keeps AA contrast; chart slots follow the hanada → lagoon
+ramp rather than the old pink M3 set.
 
 No surface on the site is pure white. `public/lagoon.jpg` is the full 1920×1080
 lagoon render with the "Project Agora" wordmark baked into its middle band;
@@ -38,12 +36,35 @@ reads as pale paper. The `body` in `src/index.css` repeats that tile at 720px wi
 family). `prefers-reduced-transparency` drops the image and falls back to the
 flat token colour.
 
-The lagoon hero is built as a saturated `gradient-lagoon` colour field with the
-watercolour canvas composited over it in `mix-blend-mode: multiply`, so the wash
-adds pigment density, blooms and paper grain while the gradient supplies the
-hue. Display type is Instrument Serif (headings, wordmark, card titles); body
-and code stay on Roboto. Instrument Serif ships one weight, so headings are
-pinned to `font-normal` rather than asking for a synthesised bold.
+Because that paper lives on `body`, nothing opaque may sit on top of it on the
+documentation pages, and `AppHeader` is `bg-background/80 backdrop-blur-md`
+rather than a solid bar — a fixed opaque header would mask the paper across the
+full width of every page. The landing is the one deliberate exception: its hero
+is finished artwork, and it is meant to cover the paper.
+
+## The landing is the artwork
+
+`Lagoon.jsx` in the repo root is the generated feral-react-gradient export whose
+recipe is `Lagoon`: an animated WATERCOLOR wash — five soft washes laid over
+paper grain and driven by its own clock. `src/pages/Landing.tsx` stretches that
+component across the whole first viewport (`position: absolute; inset: 0;
+aspectRatio: auto`) instead of leaving it in its natural 2048×1506 box, so the
+page itself is the piece. `.gradient-lagoon` stays behind it purely as a flat
+fallback colour field, and `src/components/site/SignalBurst.tsx` draws the
+BrandMark's LoRa arcs at poster scale over the wash — four staggered pulses, a
+dashed orbit, a beacon dot — with the keyframes in `src/index.css`, all of them
+switched off under `prefers-reduced-motion`.
+
+The copy is deliberately minimal (wordmark, one line, two links) and reveals
+with a Framer Motion fade-up that is skipped entirely when the visitor prefers
+reduced motion. The guides/range entry cards and the footer band were dropped
+from this page; the header nav carries those links. Display type is Instrument
+Serif (headings, wordmark); body and code stay on Roboto. Instrument Serif ships
+one weight, so headings are pinned to `font-normal` rather than asking for a
+synthesised bold.
+
+`src/components/site/LagoonWash.tsx` is the earlier hand-rolled CPU wash; the
+generated engine replaced it on the landing and it is no longer mounted.
 
 ![Guides placeholder](docs/guides-placeholder.png)
 

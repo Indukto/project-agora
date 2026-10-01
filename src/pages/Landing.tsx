@@ -1,94 +1,106 @@
-import { Button } from "@/components/ui/button";
 import { AppHeader } from "@/components/site/AppHeader";
-import { AppFooter } from "@/components/site/AppFooter";
-import { LagoonWash } from "@/components/site/LagoonWash";
-import { ArrowRight } from "lucide-react";
+import { SignalBurst } from "@/components/site/SignalBurst";
+import LagoonArt from "../../Lagoon";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router";
 
-const contentLinks = [
-  {
-    to: "/guides",
-    title: "Hardware guides",
-    caption: "Build notes from units we run — in progress",
-  },
-  {
-    to: "/range",
-    title: "Range comparisons",
-    caption: "Measured results with conditions recorded — in progress",
-  },
-];
+/**
+ * Landing — one fullscreen piece of artwork, almost no copy.
+ *
+ * `Lagoon.jsx` at the repo root is the generated feral-react-gradient export
+ * whose recipe is "Lagoon": an animated WATERCOLOR wash (five soft washes over
+ * paper grain, driven by its own clock). It is stretched over the whole first
+ * viewport — the wrapper's natural 2048×1506 aspect box and `mix-blend-mode`
+ * compositing from the old hero are gone, the engine paints its own opaque
+ * paper — and the saturated `.gradient-lagoon` field sits behind it purely as
+ * a fallback if the canvas never comes up.
+ *
+ * Everything else is deliberately sparse: wordmark, one line, two links. The
+ * guides/range entry cards and the footer band live on in the header nav and
+ * on the placeholder pages themselves.
+ */
+
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const reveal: Variants = {
+  hidden: { opacity: 0, y: 26 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const LINK_CLASS =
+  "group inline-flex items-center gap-1.5 border-b border-[#06201f]/25 pb-1 text-sm tracking-wide text-[#06201f] transition-colors hover:border-[#06201f]";
 
 export default function Landing() {
+  // The reveal is decoration: ask the visitor first.
+  const reduceMotion = useReducedMotion();
+
   return (
-    <div className="min-h-screen">
+    <div className="relative min-h-[100svh] overflow-hidden">
       <AppHeader />
 
-      {/* ── The wash is the design ── */}
-      {/* LagoonWash is the feralui `wc-lagoon` watercolour canvas (CLEAR HANADA
-          among its stops). `gradient-lagoon` sits behind it as the fallback when
-          a 2D context is unavailable, so the hero is never a flat block. */}
-      <section className="gradient-lagoon relative overflow-hidden">
-        <LagoonWash />
-        <div className="relative mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-end px-4 pt-40 pb-16 sm:px-6 sm:pb-20">
-          <div className="max-w-xl">
-            <h1 className="text-4xl leading-[1.1] tracking-tight text-[#06201f] sm:text-5xl">
-              Project Agora
-            </h1>
-            <p className="mt-4 text-lg leading-7 text-[#06201f]/90">
-              Long-range LoRa, documented.
-            </p>
-            <p className="mt-3 max-w-md text-sm leading-6 text-[#06201f]/80">
-              Guides and measured results are still being written. We publish a
-              section once its numbers and build notes can be defended.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button
-                size="lg"
-                className="bg-[#0b3d3c] text-white hover:bg-[#0b3d3c]/90"
-                asChild
-              >
-                <Link to="/guides">
-                  Read the guides
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-[#0b3d3c]/35 bg-white/45 text-[#0b3d3c] hover:bg-white/75"
-                asChild
-              >
-                <Link to="/range">Range results</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
+      {/* ── The wash is the page ── */}
+      <section aria-hidden="true" className="gradient-lagoon absolute inset-0">
+        <LagoonArt
+          speed={22}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            aspectRatio: "auto",
+          }}
+        />
       </section>
 
-      {/* ── Two quiet entries into the documentation ── */}
-      {/* No background fill here on purpose: the body already carries the lagoon
-          paper tile, so this band shows that texture instead of a flat wash. */}
-      <section>
-        <div className="mx-auto grid max-w-6xl gap-4 px-4 py-14 sm:grid-cols-2 sm:px-6">
-          {contentLinks.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="group rounded-3xl border border-border bg-background/80 p-7 backdrop-blur-sm transition-colors hover:border-primary/50"
+      {/* ── Signal rings, drawn over the wash ── */}
+      <SignalBurst className="pointer-events-none absolute -right-[26%] -bottom-[38%] size-[92vmin] text-[#0b3d3c] opacity-80 mix-blend-multiply sm:-right-[16%] sm:-bottom-[30%]" />
+
+      {/* ── Paper veil so the copy stays legible on the darker wash ── */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] bg-[radial-gradient(125%_145%_at_0%_100%,rgba(255,253,248,0.68)_0%,rgba(255,253,248,0.3)_38%,transparent_72%)]" />
+
+      {/* ── The only copy on the page ── */}
+      <main className="relative flex min-h-[100svh] flex-col justify-end px-4 pt-32 pb-14 sm:px-6 sm:pb-20">
+        <div className="mx-auto w-full max-w-6xl">
+          <motion.div
+            initial={reduceMotion ? false : "hidden"}
+            animate="visible"
+            transition={{ staggerChildren: 0.12, delayChildren: 0.3 }}
+            className="max-w-xl"
+          >
+            <motion.h1
+              variants={reveal}
+              transition={{ duration: 1, ease: EASE }}
+              className="text-6xl leading-[1.02] tracking-tight text-[#06201f] sm:text-7xl"
             >
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg">{item.title}</h2>
-                <ArrowRight className="size-4 text-muted-foreground transition-colors group-hover:text-primary" />
-              </div>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                {item.caption}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </section>
+              Project Agora
+            </motion.h1>
 
-      <AppFooter />
+            <motion.p
+              variants={reveal}
+              transition={{ duration: 1, ease: EASE }}
+              className="mt-4 text-lg leading-7 text-[#06201f]/85 sm:text-xl"
+            >
+              Long-range LoRa, documented.
+            </motion.p>
+
+            <motion.div
+              variants={reveal}
+              transition={{ duration: 1, ease: EASE }}
+              className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3"
+            >
+              <Link to="/guides" className={LINK_CLASS}>
+                Hardware guides
+                <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </Link>
+              <Link to="/range" className={LINK_CLASS}>
+                Range results
+                <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+      </main>
     </div>
   );
 }

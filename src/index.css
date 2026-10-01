@@ -134,6 +134,68 @@
       );
     }
   }
+
+  /* Landing art: the LoRa signal burst drawn over the lagoon wash. Each pulse
+     scales out of its own centre (fill-box), so one circle per ring is enough. */
+  .signal-burst-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    animation: signal-burst-ring 4.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  .signal-burst-orbit {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: signal-burst-orbit 52s linear infinite;
+  }
+  .signal-burst-core {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: signal-burst-core 4.8s ease-in-out infinite;
+  }
+  @keyframes signal-burst-ring {
+    0% {
+      transform: scale(0.18);
+      opacity: 0;
+    }
+    12% {
+      opacity: 0.5;
+    }
+    70% {
+      opacity: 0.16;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+  @keyframes signal-burst-orbit {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes signal-burst-core {
+    0%,
+    100% {
+      transform: scale(0.85);
+      opacity: 0.75;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .signal-burst-ring,
+    .signal-burst-orbit,
+    .signal-burst-core {
+      animation: none;
+    }
+    .signal-burst-ring {
+      transform: none;
+      opacity: 0.18;
+    }
+  }
 }
 
 @layer base {
