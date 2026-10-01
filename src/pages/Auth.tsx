@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/input-otp";
 
 import { useAuth } from "@/hooks/use-auth";
-import logo from "@/assets/logo.svg";
+import { BrandMark } from "@/components/site/BrandMark";
+import { MeshHero } from "@/components/site/MeshHero";
 import { ArrowRight, Loader2, Mail, UserX } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 
 interface AuthProps {
   redirectAfterAuth?: string;
@@ -110,29 +111,24 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-
-      
+    <div className="relative min-h-screen">
+      <MeshHero />
       {/* Auth Content */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="flex items-center justify-center h-full flex-col">
-        <Card className="min-w-[350px] pb-0 border shadow-md">
+      <div className="relative z-[2] flex flex-col">
+        <div className="flex items-center justify-center px-4 pt-20 pb-10">
+          <Link to="/" className="absolute top-5 left-5">
+            <BrandMark />
+          </Link>
+        <Card className="min-w-[350px] border-border/70 bg-card/85 shadow-xl backdrop-blur-xl">
           {step === "signIn" ? (
             <>
               <CardHeader className="text-center">
-              <div className="flex justify-center">
-                    <img
-                      src={logo}
-                      alt="Lock Icon"
-                      width={64}
-                      height={64}
-                      className="rounded-lg mb-4 mt-4 cursor-pointer"
-                      onClick={() => navigate("/")}
-                    />
-                  </div>
-                <CardTitle className="text-xl">Get Started</CardTitle>
+                <div className="mb-1 flex justify-center">
+                  <BrandMark compact />
+                </div>
+                <CardTitle className="font-display text-xl">Join Meshwire</CardTitle>
                 <CardDescription>
-                  Enter your email to log in or sign up
+                  Partner sign-in — enter your email to log in or sign up
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleEmailSubmit}>
@@ -277,16 +273,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             </>
           )}
 
-          <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-muted border-t rounded-b-lg">
-            Secured by{" "}
-            <a
-              href="https://freebuff.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-primary transition-colors"
-            >
-              freebuff.com
-            </a>
+          <div className="py-4 px-6 text-xs text-center text-muted-foreground bg-surface-2/80 border-t rounded-b-3xl">
+            Partner accounts power the field-data program. Browsers stay free.
           </div>
         </Card>
         </div>
