@@ -9,12 +9,12 @@ const contentLinks = [
   {
     to: "/guides",
     title: "Hardware guides",
-    caption: "Builds we run year-round",
+    caption: "Build notes from units we run — in progress",
   },
   {
     to: "/range",
     title: "Range comparisons",
-    caption: "Measured results, conditions recorded",
+    caption: "Measured results with conditions recorded — in progress",
   },
 ];
 
@@ -33,6 +33,10 @@ export default function Landing() {
             </h1>
             <p className="mt-4 text-lg leading-7 text-[#1d2a33]/85">
               Long-range LoRa, documented.
+            </p>
+            <p className="mt-3 max-w-md text-sm leading-6 text-[#1d2a33]/70">
+              Guides and measured results are still being written. We publish a
+              section once its numbers and build notes can be defended.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button size="lg" asChild>

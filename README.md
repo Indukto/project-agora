@@ -17,7 +17,12 @@ All relevant files live in the 'src' directory.
 
 Use bun for the package manager.
 
-![Partner hub after removing team sign-in](docs/partner-hub.png)
+![Guides placeholder](docs/guides-placeholder.png)
+
+The guides and range pages are honest placeholders until real build notes and
+measured field results exist: `src/data/guides.ts` and `src/data/range.ts` held
+invented content and were deleted. Both pages now render the shared
+`ComingSoon` component in `src/components/site/ComingSoon.tsx`.
 
 ## Setup
 

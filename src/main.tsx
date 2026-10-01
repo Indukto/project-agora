@@ -12,7 +12,6 @@ const Landing = lazy(() => import("./pages/Landing.tsx"));
 const Dashboard = lazy(() => import("./pages/Dashboard.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const Guides = lazy(() => import("./pages/Guides.tsx"));
-const GuideDetail = lazy(() => import("./pages/GuideDetail.tsx"));
 const Range = lazy(() => import("./pages/Range.tsx"));
 
 // Simple loading fallback for route transitions
@@ -121,7 +120,6 @@ createRoot(document.getElementById("root")!).render(
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/guides" element={<Guides />} />
-              <Route path="/guides/:slug" element={<GuideDetail />} />
               <Route path="/range" element={<Range />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="*" element={<NotFound />} />
